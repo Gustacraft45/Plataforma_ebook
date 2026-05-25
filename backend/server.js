@@ -1,20 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
 const PORT = 5000;
 
-// Configurações para o servidor entender JSON e aceitar requisições do Frontend
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Rota de teste para ver se está funcionando
+// Conexão com o MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('🍃 Conectado ao MongoDB com sucesso!'))
+  .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
+
+// Rota de teste
 app.get('/', (req, res) => {
-  res.send('O servidor do e-book está online e rodando perfeitamente!');
+  res.send('O servidor do e-book está online e conectado ao banco!');
 });
 
-// Inicializa o servidor na porta 5000
 app.listen(PORT, () => {
-  console.log(`Servidor rodando com sucesso na porta ${PORT}`);
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
