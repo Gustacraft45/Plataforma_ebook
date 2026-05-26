@@ -5,6 +5,7 @@ require('dotenv').config();
 
 // IMPORT DAS ROTAS AQUI
 const authRoutes = require('./routes/authRoutes');
+const evaluateRoutes = require('./routes/evaluateRoutes');
 
 const app = express();
 const PORT = 5000;
@@ -20,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // LINKAR AS ROTAS NO SERVIDOR
 app.use('/api/auth', authRoutes);
-
+app.use('/api/evaluate', evaluateRoutes);
 // Rota de teste
 app.get('/', (req, res) => {
   res.send('O servidor do e-book está online e conectado ao banco!');
