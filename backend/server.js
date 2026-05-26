@@ -3,6 +3,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+// IMPORT DAS ROTAS AQUI
+const authRoutes = require('./routes/authRoutes');
+
 const app = express();
 const PORT = 5000;
 
@@ -14,6 +17,9 @@ app.use(express.json());
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('🍃 Conectado ao MongoDB com sucesso!'))
   .catch((err) => console.error('❌ Erro ao conectar ao MongoDB:', err));
+
+// LINKAR AS ROTAS NO SERVIDOR
+app.use('/api/auth', authRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {
