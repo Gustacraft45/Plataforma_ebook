@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Groq = require('groq-sdk');
+const auth = require('../middleware/auth');
 
-// Inicia a Groq com a sua chave do .env
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// ROTA DE AVALIAÇÃO: http://localhost:5000/api/evaluate
-router.post('/', async (req, res) => {
+// Colocamos o 'auth' no meio da rota. Agora só passa quem tem crachá!
+router.post('/', auth, async (req, res) => {
   try {
     const { question, studentAnswer } = req.body;
+
+    // --- NOVA VALIDAÇÃO DE ENTRADA ---
+    if (!question || !studentAnswer) {
+      return res.status(400).json({ message: 'A pergunta e a resposta do aluno são obrigatórias.' });
+    }
+    // ---------------------------------
 
     const promptText = `Você é um professor avaliando a resposta de um aluno.
     Pergunta do desafio: "${question}"
