@@ -22,6 +22,7 @@ mongoose.connect(process.env.MONGO_URI)
 // LINKAR AS ROTAS NO SERVIDOR
 app.use('/api/auth', authRoutes);
 app.use('/api/evaluate', evaluateRoutes);
+app.use('/api/books', require('./routes/bookRoutes'));
 // Rota de teste
 app.get('/', (req, res) => {
   res.send('O servidor do e-book está online e conectado ao banco!');
