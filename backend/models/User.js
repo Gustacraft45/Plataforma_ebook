@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
   },
   progress: [
     {
-      bookId: String, // ID do livro que ele está lendo
+      bookId: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
       currentNode: String // O nó/página onde ele parou
     }
   ]
