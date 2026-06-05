@@ -10,6 +10,7 @@ export default function BookReading() {
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [completed, setCompleted] = useState(false)
   const [xp, setXp] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user'))?.xp || 0 } catch { return 0 }
   })
@@ -18,6 +19,9 @@ export default function BookReading() {
     const fetchBook = async () => {
       const { ok, data } = await api.books.get(id)
       if (!ok) { navigate('/dashboard'); return }
+      if (!data.nodes || data.nodes.length === 0) {
+        navigate('/dashboard'); return
+      }
       setBook(data)
     }
     fetchBook()
@@ -29,20 +33,23 @@ export default function BookReading() {
     setLoading(true)
     setResult(null)
 
-    const currentScene = book.nodes[nodeIndex]
-    const { ok, data } = await api.evaluate(currentScene.challengeQuestion, answer)
+    const scene = book.nodes[nodeIndex]
+    const { ok, data } = await api.evaluate(scene.challengeQuestion, answer)
 
     if (ok) {
       setResult(data)
       const isCorrect = data.status === 'correto' || data.status === 'correct'
-      const res = await api.user.progress(id, currentScene.id, isCorrect)
-      if (res.ok) {
-        setXp(res.data.xpTotal)
-        const stored = JSON.parse(localStorage.getItem('user') || '{}')
-        localStorage.setItem('user', JSON.stringify({ ...stored, xp: res.data.xpTotal }))
+      const isPartial = data.status === 'parcial' || data.status === 'partial'
+      if (isCorrect || isPartial) {
+        const res = await api.user.progress(id, scene.id, isCorrect)
+        if (res.ok) {
+          setXp(res.data.xpTotal)
+          const stored = JSON.parse(localStorage.getItem('user') || '{}')
+          localStorage.setItem('user', JSON.stringify({ ...stored, xp: res.data.xpTotal }))
+        }
       }
     } else {
-      setResult({ status: 'erro', feedback: 'Não foi possível conectar à IA.' })
+      setResult({ status: 'erro', feedback: 'Não foi possível conectar à IA. Tente novamente.' })
     }
     setLoading(false)
   }
@@ -52,86 +59,136 @@ export default function BookReading() {
       setNodeIndex(i => i + 1)
       setAnswer('')
       setResult(null)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setCompleted(true)
     }
   }
 
   if (!book) return (
-    <div style={{ minHeight: '100vh', background: '#0d0f14', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666980', fontFamily: 'DM Sans, sans-serif' }}>
-      Carregando livro...
+    <div style={{ minHeight: '100vh', background: '#0d0f14', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center', color: '#4a4d60', fontFamily: 'DM Sans, sans-serif' }}>
+        <div style={{ fontSize: 32, marginBottom: 12 }}>📖</div>
+        <p>Carregando livro...</p>
+      </div>
     </div>
   )
 
+  if (completed) return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600&family=DM+Sans:wght@400;500&display=swap');
+        @keyframes scaleIn { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
+        .comp-root { min-height:100vh; background:#0d0f14; display:flex; align-items:center; justify-content:center; font-family:'DM Sans',sans-serif; }
+        .comp-card { background:#13151c; border:1px solid #2a2d3a; border-radius:24px; padding:56px 48px; text-align:center; max-width:440px; animation:scaleIn 0.4s ease; }
+        .comp-trophy { font-size:56px; margin-bottom:20px; }
+        .comp-title { font-family:'Lora',serif; font-size:26px; color:#f1f0ff; margin:0 0 10px; }
+        .comp-sub { font-size:14px; color:#666980; line-height:1.6; margin:0 0 28px; }
+        .comp-xp { display:inline-block; padding:8px 20px; background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.3); border-radius:20px; color:#a5b4fc; font-size:14px; font-weight:500; margin-bottom:28px; }
+        .comp-btn { display:block; width:100%; padding:13px; background:linear-gradient(135deg,#7c3aed,#6366f1); color:white; border:none; border-radius:10px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; }
+        .comp-btn:hover { opacity:0.9; }
+      `}</style>
+      <div className="comp-root">
+        <div className="comp-card">
+          <div className="comp-trophy">🏆</div>
+          <h2 className="comp-title">Jornada concluída!</h2>
+          <p className="comp-sub">Você completou <strong style={{color:'#f1f0ff'}}>{book.title}</strong> e dominou todos os desafios do {book.characterName}.</p>
+          <div className="comp-xp">⚡ {xp} XP acumulados</div>
+          <button className="comp-btn" onClick={() => navigate('/dashboard')}>Voltar à estante</button>
+        </div>
+      </div>
+    </>
+  )
+
   const scene = book.nodes[nodeIndex]
-  const isLast = nodeIndex === book.nodes.length - 1
   const isCorrect = result && (result.status === 'correto' || result.status === 'correct')
   const isPartial = result && (result.status === 'parcial' || result.status === 'partial')
+  const isWrong = result && !isCorrect && !isPartial
   const progress = Math.round(((nodeIndex + 1) / book.nodes.length) * 100)
+  const isLast = nodeIndex === book.nodes.length - 1
+
+  const resultCfg = isCorrect
+    ? { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', label: '✦ Correto!', labelColor: '#6ee7b7', divColor: 'rgba(16,185,129,0.2)' }
+    : isPartial
+    ? { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', label: '◈ Quase lá', labelColor: '#fcd34d', divColor: 'rgba(245,158,11,0.2)' }
+    : { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', label: '✕ Tente novamente', labelColor: '#f87171', divColor: 'rgba(239,68,68,0.2)' }
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
         * { box-sizing: border-box; }
-        .read-root { min-height: 100vh; background: #0d0f14; font-family: 'DM Sans', sans-serif; color: #c9c8d6; }
+        .read-root { min-height:100vh; background:#0d0f14; font-family:'DM Sans',sans-serif; color:#c9c8d6; }
 
-        .read-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; border-bottom: 1px solid #1e2030; }
-        .read-back { background: none; border: none; color: #666980; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-        .read-back:hover { color: #c9c8d6; }
-        .read-progress-wrap { flex: 1; max-width: 200px; margin: 0 24px; }
-        .read-progress-track { height: 4px; background: #1e2030; border-radius: 2px; overflow: hidden; }
-        .read-progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: 2px; transition: width 0.5s; }
-        .read-progress-label { font-size: 11px; color: #4a4d60; text-align: right; margin-top: 4px; }
-        .read-xp { font-size: 13px; color: #a78bfa; background: #1a1c28; border: 1px solid #2a2d3a; padding: 5px 12px; border-radius: 20px; }
+        .read-topbar {
+          display:flex; align-items:center; gap:16px;
+          padding:14px 40px; border-bottom:1px solid #1e2030;
+          position:sticky; top:0; background:rgba(13,15,20,0.92);
+          backdrop-filter:blur(12px); z-index:10;
+        }
+        .read-back { background:none; border:none; color:#666980; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:5px; white-space:nowrap; transition:color 0.2s; padding:0; }
+        .read-back:hover { color:#c9c8d6; }
+        .read-bar-wrap { flex:1; }
+        .read-bar-labels { display:flex; justify-content:space-between; margin-bottom:5px; }
+        .read-bar-title { font-size:12px; color:#f1f0ff; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:280px; }
+        .read-bar-info { font-size:11px; color:#4a4d60; }
+        .read-bar-track { height:3px; background:#1e2030; border-radius:2px; }
+        .read-bar-fill { height:100%; background:linear-gradient(90deg,#6366f1,#a78bfa); border-radius:2px; transition:width 0.5s; }
+        .read-xp { font-size:12px; color:#a78bfa; white-space:nowrap; background:#1a1c28; border:1px solid #2a2d3a; padding:5px 12px; border-radius:20px; }
 
-        .read-body { max-width: 720px; margin: 0 auto; padding: 50px 40px; }
+        .read-body { max-width:680px; margin:0 auto; padding:48px 40px 80px; }
 
-        .read-scene-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #4a4d60; margin-bottom: 6px; }
-        .read-title { font-family: 'Lora', serif; font-size: 28px; font-weight: 600; color: #f1f0ff; margin: 0 0 32px; line-height: 1.3; }
+        .read-map { display:flex; align-items:center; gap:4px; margin-bottom:40px; }
+        .m-dot { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:500; border:1.5px solid #2a2d3a; color:#4a4d60; flex-shrink:0; transition:all 0.3s; }
+        .m-dot.done { background:rgba(99,102,241,0.2); border-color:#6366f1; color:#a5b4fc; }
+        .m-dot.current { background:#6366f1; border-color:#6366f1; color:white; }
+        .m-line { flex:1; height:1px; background:#1e2030; transition:background 0.3s; max-width:28px; }
+        .m-line.done { background:#6366f1; }
 
-        .read-char-block { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 36px; }
-        .read-char-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-        .read-char-bubble { flex: 1; background: #13151c; border: 1px solid #1e2030; border-radius: 0 14px 14px 14px; padding: 18px 20px; }
-        .read-char-name { font-size: 11px; font-weight: 500; color: #6366f1; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-        .read-char-text { font-size: 15px; line-height: 1.8; color: #9ca3b0; font-style: italic; }
+        .read-scene-meta { font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:#4a4d60; margin-bottom:6px; }
+        .read-title { font-family:'Lora',serif; font-size:26px; font-weight:600; color:#f1f0ff; margin:0 0 30px; line-height:1.3; animation:fadeUp 0.35s ease; }
 
-        .read-divider { height: 1px; background: #1e2030; margin: 32px 0; }
+        .read-char { display:flex; gap:14px; align-items:flex-start; margin-bottom:32px; animation:fadeUp 0.35s 0.05s ease both; }
+        .read-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .read-bubble { flex:1; background:#13151c; border:1px solid #1e2030; border-radius:0 14px 14px 14px; padding:16px 18px; }
+        .read-char-name { font-size:10px; font-weight:500; color:#6366f1; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:7px; }
+        .read-char-text { font-size:14px; line-height:1.85; color:#9ca3b0; font-style:italic; }
 
-        .read-challenge { background: #13151c; border: 1px solid #2a2d3a; border-radius: 14px; padding: 24px; margin-bottom: 24px; }
-        .read-challenge-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #f59e0b; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap-gap: 6px; }
-        .read-challenge-q { font-size: 15px; color: #e2e0f0; line-height: 1.6; font-weight: 400; }
+        .read-divider { height:1px; background:#1e2030; margin:28px 0; }
 
-        .read-form { display: flex; flex-direction: column; gap: 12px; }
-        .read-textarea { width: 100%; padding: 14px 16px; background: #0d0f14; border: 1px solid #2a2d3a; border-radius: 12px; font-size: 14px; color: #f1f0ff; font-family: 'DM Sans', sans-serif; resize: vertical; min-height: 100px; outline: none; transition: border-color 0.2s; line-height: 1.6; }
-        .read-textarea:focus { border-color: #6366f1; }
-        .read-textarea::placeholder { color: #3d4060; }
-        .read-submit { padding: 13px; background: linear-gradient(135deg, #7c3aed, #6366f1); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s; }
-        .read-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-        .read-submit:hover:not(:disabled) { opacity: 0.9; }
+        .read-challenge { background:#13151c; border:1px solid #2a2d3a; border-radius:14px; padding:22px; margin-bottom:22px; animation:fadeUp 0.35s 0.1s ease both; }
+        .read-challenge-top { font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:#f59e0b; font-weight:500; margin-bottom:10px; }
+        .read-challenge-q { font-size:15px; color:#e2e0f0; line-height:1.65; }
 
-        .read-result { margin-top: 20px; padding: 20px; border-radius: 12px; border-width: 1px; border-style: solid; }
-        .read-result-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-bottom: 8px; }
-        .read-result-text { font-size: 14px; line-height: 1.7; }
-        .read-result-narrator { margin-top: 12px; padding-top: 12px; border-top-width: 1px; border-top-style: solid; font-size: 13px; line-height: 1.6; font-style: italic; opacity: 0.7; }
+        .read-form { display:flex; flex-direction:column; gap:10px; animation:fadeUp 0.35s 0.15s ease both; }
+        .read-textarea { width:100%; padding:13px 16px; background:#0d0f14; border:1px solid #2a2d3a; border-radius:12px; font-size:14px; color:#f1f0ff; font-family:'DM Sans',sans-serif; resize:vertical; min-height:96px; outline:none; transition:border-color 0.2s; line-height:1.6; }
+        .read-textarea:focus { border-color:#6366f1; }
+        .read-textarea::placeholder { color:#3d4060; }
+        .read-submit { padding:13px; background:linear-gradient(135deg,#7c3aed,#6366f1); color:white; border:none; border-radius:10px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:opacity 0.2s; }
+        .read-submit:disabled { opacity:0.45; cursor:not-allowed; }
+        .read-submit:hover:not(:disabled) { opacity:0.88; }
 
-        .read-next { margin-top: 16px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #10b981; background: rgba(16,185,129,0.1); color: #6ee7b7; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
-        .read-next:hover { background: rgba(16,185,129,0.2); }
-
-        .read-map { display: flex; align-items: center; gap: 6px; margin-bottom: 40px; flex-wrap: wrap; }
-        .map-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; border: 1.5px solid #2a2d3a; color: #4a4d60; flex-shrink: 0; }
-        .map-dot.done { background: rgba(99,102,241,0.15); border-color: #6366f1; color: #a5b4fc; }
-        .map-dot.current { background: #6366f1; border-color: #6366f1; color: white; }
-        .map-line { flex: 1; height: 1px; background: #1e2030; min-width: 10px; max-width: 30px; }
-        .map-line.done { background: #6366f1; }
+        .read-result { margin-top:18px; padding:18px; border-radius:12px; border-width:1px; border-style:solid; animation:fadeUp 0.3s ease; }
+        .read-result-label { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; font-weight:500; margin-bottom:8px; }
+        .read-result-text { font-size:14px; line-height:1.7; }
+        .read-result-div { height:1px; margin:12px 0; }
+        .read-result-sub { font-size:13px; font-style:italic; opacity:0.75; line-height:1.6; }
+        .read-action-btn { margin-top:14px; width:100%; padding:11px; border-radius:10px; font-size:13px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:opacity 0.2s; border-width:1px; border-style:solid; }
+        .read-action-btn:hover { opacity:0.85; }
       `}</style>
 
       <div className="read-root">
         <div className="read-topbar">
           <button className="read-back" onClick={() => navigate('/dashboard')}>← Estante</button>
-          <div className="read-progress-wrap">
-            <div className="read-progress-track">
-              <div className="read-progress-fill" style={{ width: `${progress}%` }} />
+          <div className="read-bar-wrap">
+            <div className="read-bar-labels">
+              <span className="read-bar-title">{book.title}</span>
+              <span className="read-bar-info">Cena {nodeIndex + 1}/{book.nodes.length} · {progress}%</span>
             </div>
-            <div className="read-progress-label">{nodeIndex + 1} / {book.nodes.length} cenas</div>
+            <div className="read-bar-track">
+              <div className="read-bar-fill" style={{ width: `${progress}%` }} />
+            </div>
           </div>
           <div className="read-xp">⚡ {xp} XP</div>
         </div>
@@ -140,20 +197,19 @@ export default function BookReading() {
           {/* Mapa */}
           <div className="read-map">
             {book.nodes.map((n, i) => (
-              <div key={n.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div className={`map-dot ${i < nodeIndex ? 'done' : i === nodeIndex ? 'current' : ''}`}>{i + 1}</div>
-                {i < book.nodes.length - 1 && <div className={`map-line ${i < nodeIndex ? 'done' : ''}`} />}
+              <div key={n.id || i} style={{ display: 'flex', alignItems: 'center', gap: 4, flex: i < book.nodes.length - 1 ? 1 : 'none' }}>
+                <div className={`m-dot ${i < nodeIndex ? 'done' : i === nodeIndex ? 'current' : ''}`}>{i + 1}</div>
+                {i < book.nodes.length - 1 && <div className={`m-line ${i < nodeIndex ? 'done' : ''}`} />}
               </div>
             ))}
           </div>
 
-          <div className="read-scene-label">Cena {nodeIndex + 1} · {book.subject}</div>
+          <div className="read-scene-meta">{book.subject} · {scene.title}</div>
           <h1 className="read-title">{scene.title}</h1>
 
-          {/* Personagem */}
-          <div className="read-char-block">
-            <div className="read-char-avatar">🧙</div>
-            <div className="read-char-bubble">
+          <div className="read-char">
+            <div className="read-avatar">🧙</div>
+            <div className="read-bubble">
               <div className="read-char-name">{book.characterName}</div>
               <div className="read-char-text">{scene.storyText}</div>
             </div>
@@ -161,14 +217,12 @@ export default function BookReading() {
 
           <div className="read-divider" />
 
-          {/* Desafio */}
           <div className="read-challenge">
-            <div className="read-challenge-label">⚔ Desafio</div>
+            <div className="read-challenge-top">⚔ Desafio</div>
             <div className="read-challenge-q">{scene.challengeQuestion}</div>
           </div>
 
-          {/* Form resposta */}
-          {!result && (
+          {!result ? (
             <form className="read-form" onSubmit={handleEvaluate}>
               <textarea
                 className="read-textarea"
@@ -178,40 +232,46 @@ export default function BookReading() {
                 required
               />
               <button className="read-submit" type="submit" disabled={loading}>
-                {loading ? 'O mentor está avaliando...' : 'Enviar resposta'}
+                {loading ? '🤖 O mentor está avaliando...' : 'Enviar resposta'}
               </button>
             </form>
-          )}
+          ) : (
+            <div className="read-result" style={{ background: resultCfg.bg, borderColor: resultCfg.border }}>
+              <div className="read-result-label" style={{ color: resultCfg.labelColor }}>{resultCfg.label}</div>
+              <div className="read-result-text">{result.feedback}</div>
 
-          {/* Resultado */}
-          {result && (() => {
-            const cfg = isCorrect
-              ? { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)', label: '✦ Correto!', labelColor: '#6ee7b7', divColor: 'rgba(16,185,129,0.15)' }
-              : isPartial
-              ? { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', label: '◈ Quase lá', labelColor: '#fcd34d', divColor: 'rgba(245,158,11,0.15)' }
-              : { bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)', label: '✕ Tente de novo', labelColor: '#f87171', divColor: 'rgba(239,68,68,0.15)' }
+              {(isCorrect || isPartial) && (
+                <>
+                  <div className="read-result-div" style={{ background: resultCfg.divColor }} />
+                  <div className="read-result-sub">
+                    {isCorrect ? '+100 XP conquistados! ' : '+50 XP pelo esforço! '}
+                    {isLast ? 'Você chegou ao fim desta jornada.' : 'Avance para a próxima cena.'}
+                  </div>
+                  <button
+                    className="read-action-btn"
+                    style={{ background: resultCfg.bg, borderColor: resultCfg.border, color: resultCfg.labelColor }}
+                    onClick={goNext}
+                  >
+                    {isLast ? 'Concluir jornada 🏆' : 'Próxima cena →'}
+                  </button>
+                </>
+              )}
 
-            return (
-              <div className="read-result" style={{ background: cfg.bg, borderColor: cfg.border }}>
-                <div className="read-result-label" style={{ color: cfg.labelColor }}>{cfg.label}</div>
-                <div className="read-result-text">{result.feedback}</div>
-                {(isCorrect || isPartial) && (
-                  <>
-                    <div className="read-result-narrator" style={{ borderTopColor: cfg.divColor }}>
-                      {isLast ? '🏆 Você concluiu este e-book! Parabéns pela jornada.' : 'Continue para a próxima cena.'}
-                    </div>
-                    {!isLast && <button className="read-next" onClick={goNext}>Próxima cena →</button>}
-                  </>
-                )}
-                {!isCorrect && !isPartial && (
-                  <button className="read-next" style={{ borderColor: '#6366f1', background: 'rgba(99,102,241,0.1)', color: '#a5b4fc' }}
-                    onClick={() => { setResult(null); setAnswer('') }}>
+              {isWrong && (
+                <>
+                  <div className="read-result-div" style={{ background: resultCfg.divColor }} />
+                  <div className="read-result-sub">Releia o pergaminho e tente uma explicação diferente.</div>
+                  <button
+                    className="read-action-btn"
+                    style={{ background: 'rgba(99,102,241,0.1)', borderColor: 'rgba(99,102,241,0.3)', color: '#a5b4fc' }}
+                    onClick={() => { setResult(null); setAnswer('') }}
+                  >
                     Tentar novamente
                   </button>
-                )}
-              </div>
-            )
-          })()}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
