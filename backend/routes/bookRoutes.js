@@ -1,52 +1,95 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models/Book');
-const auth = require('../middleware/auth'); // Nosso porteiro protetor
+const auth = require('../middleware/auth');
 
-// 1. ROTA PARA CADASTRAR UM LIVRO COMPLETO (POST)
-// http://localhost:5000/api/books/create
-router.post('/create', async (req, res) => {
+// POST /api/books/create — só escritor pode criar
+router.post('/create', auth, async (req, res) => {
   try {
+    if (req.user.role !== 'escritor')
+      return res.status(403).json({ message: 'Apenas escritores podem publicar livros.' });
+
     const { title, subject, characterName, nodes } = req.body;
+    if (!title || !subject || !characterName || !nodes || nodes.length === 0)
+      return res.status(400).json({ message: 'Todos os campos e pelo menos uma cena são obrigatórios.' });
 
-    // Validação simples dos campos principais
-    if (!title || !subject || !characterName || !nodes || nodes.length === 0) {
-      return res.status(400).json({ message: 'Todos os campos do livro e pelo menos uma cena (node) são obrigatórios.' });
-    }
-
-    const newBook = new Book({ title, subject, characterName, nodes });
-    await newBook.save();
-
-    res.status(201).json({ message: 'Livro interativo cadastrado com sucesso!', book: newBook });
-  } catch (error) {
-    console.error("Erro ao cadastrar o livro:", error);
-    res.status(500).json({ message: 'Erro ao cadastrar o livro no banco de dados.' });
+    const book = new Book({ title, subject, characterName, nodes, authorId: req.user.userId });
+    await book.save();
+    res.status(201).json({ message: 'Livro publicado com sucesso!', book });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao publicar o livro.' });
   }
 });
 
-// 2. ROTA PARA LISTAR TODOS OS LIVROS (GET) - Protegida por Token
-// http://localhost:5000/api/books
+// GET /api/books — lista todos (leitores e escritores)
 router.get('/', auth, async (req, res) => {
   try {
-    // Traz a lista de livros mostrando apenas Título, Matéria e Nome do Personagem (sem pesar a requisição com o texto todo)
-    const books = await Book.find().select('title subject characterName');
+    const books = await Book.find().select('title subject characterName authorId createdAt');
     res.json(books);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar a lista de livros.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar livros.' });
   }
 });
 
-// 3. ROTA PARA BUSCAR UM LIVRO DETALHADO PELO ID (GET) - Protegida por Token
-// http://localhost:5000/api/books/:id
+// GET /api/books/mine — livros do escritor logado
+router.get('/mine', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'escritor')
+      return res.status(403).json({ message: 'Apenas escritores têm painel de autoria.' });
+
+    const books = await Book.find({ authorId: req.user.userId });
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar seus livros.' });
+  }
+});
+
+// GET /api/books/:id — detalhe de um livro
 router.get('/:id', auth, async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
-    if (!book) {
-      return res.status(404).json({ message: 'Livro interativo não encontrado.' });
-    }
+    if (!book) return res.status(404).json({ message: 'Livro não encontrado.' });
     res.json(book);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar os detalhes do livro.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar o livro.' });
+  }
+});
+
+// PUT /api/books/:id — editar livro (só o autor)
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Livro não encontrado.' });
+
+    if (book.authorId.toString() !== req.user.userId)
+      return res.status(403).json({ message: 'Você não tem permissão para editar este livro.' });
+
+    const { title, subject, characterName, nodes } = req.body;
+    if (title) book.title = title;
+    if (subject) book.subject = subject;
+    if (characterName) book.characterName = characterName;
+    if (nodes) book.nodes = nodes;
+
+    await book.save();
+    res.json({ message: 'Livro atualizado com sucesso!', book });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao atualizar o livro.' });
+  }
+});
+
+// DELETE /api/books/:id — excluir livro (só o autor)
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ message: 'Livro não encontrado.' });
+
+    if (book.authorId.toString() !== req.user.userId)
+      return res.status(403).json({ message: 'Você não tem permissão para excluir este livro.' });
+
+    await book.deleteOne();
+    res.json({ message: 'Livro excluído com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao excluir o livro.' });
   }
 });
 

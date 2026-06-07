@@ -2,149 +2,213 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Book = require('../models/Book');
-const mongoose = require('mongoose'); // Importado para validar o formato do ID antes de bater no banco
-const auth = require('../middleware/auth'); // O porteiro que extrai o ID do token
+const mongoose = require('mongoose');
+const auth = require('../middleware/auth');
 
-// ROTA PARA ATUALIZAR PROGRESSO E DAR XP (PATCH)
-// http://localhost:5000/api/user/progress
+const userId = (req) => req.user.userId || req.user.id || req.user._id;
+
+// PATCH /api/user/progress — salva progresso, resposta e sessão
 router.patch('/progress', auth, async (req, res) => {
   try {
-    const { bookId, currentNode, isCorrect } = req.body;
-    
-    // --> A VERIFICAÇÃO QUE VOCÊ SUGERIU COMEÇA AQUI <--
-    // Valida se o formato do ID é aceito pelo MongoDB para evitar o CastError
-    if (!mongoose.Types.ObjectId.isValid(bookId)) {
-      return res.status(400).json({ message: 'Erro: O formato do ID do livro é inválido.' });
-    }
+    const { bookId, nodeId, currentNode, isCorrect, status, minutesRead, minutesIdle } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(400).json({ message: 'ID do livro inválido.' });
 
     const bookExists = await Book.findById(bookId);
-    if (!bookExists) {
-      return res.status(404).json({ message: 'Erro: Este livro não existe no sistema.' });
-    }
-    // req.user vem do nosso middleware auth.js (você precisa garantir que o auth.js salva o ID no req.user.id ou req.user._id)
-    const userId = req.user.userId || req.user.id || req.user._id; 
+    if (!bookExists) return res.status(404).json({ message: 'Livro não encontrado.' });
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
-    }
+    const user = await User.findById(userId(req));
+    if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
 
-    // 1. Lógica do XP: Se a IA disse que acertou, toma +50 XP!
-    if (isCorrect) {
-      user.xp += 50; 
-    }
+    // Normaliza status (IA pode retornar 'correct', 'correto', 'Correto', etc.)
+    const normalizeStatus = (s) => {
+      if (!s) return null;
+      const sl = s.toLowerCase();
+      if (sl === 'correct' || sl === 'correto') return 'correto';
+      if (sl === 'partial' || sl === 'parcial') return 'parcial';
+      return 'errado';
+    };
+    const statusNorm = normalizeStatus(status);
 
-    // 2. Lógica do Progresso: Procura se o aluno já começou esse livro antes
-    const progressIndex = user.progress.findIndex(p => p.bookId === bookId);
+    // XP
+    if (statusNorm === 'correto') user.xp += 100;
+    else if (statusNorm === 'parcial') user.xp += 50;
 
-    if (progressIndex > -1) {
-      // Se já existe, só atualiza para o nó/página em que ele está agora
-      user.progress[progressIndex].currentNode = currentNode;
+    // Progresso no livro
+    const idx = user.progress.findIndex(p => p.bookId?.toString() === bookId);
+    if (idx > -1) {
+      user.progress[idx].currentNode = currentNode;
     } else {
-      // Se é a primeira vez lendo, cria o registro do livro no array
       user.progress.push({ bookId, currentNode });
     }
 
-    await user.save(); // Salva no banco de dados!
+    // Log de resposta para analytics
+    if (statusNorm) {
+      user.answerLog.push({ bookId, nodeId, status: statusNorm });
+    }
 
-    res.json({ 
-      message: 'Progresso salvo com sucesso!', 
-      xpTotal: user.xp,
-      progress: user.progress
-    });
+    // Sessão do dia
+    if (minutesRead !== undefined || minutesIdle !== undefined) {
+      const today = new Date().toISOString().split('T')[0];
+      const sIdx = user.sessions.findIndex(s => s.date === today);
+      if (sIdx > -1) {
+        user.sessions[sIdx].minutesRead += (minutesRead || 0);
+        user.sessions[sIdx].minutesIdle += (minutesIdle || 0);
+      } else {
+        user.sessions.push({ date: today, minutesRead: minutesRead || 0, minutesIdle: minutesIdle || 0 });
+      }
+    }
 
-  } catch (error) {
-    console.error("Erro ao salvar progresso:", error);
-    res.status(500).json({ message: 'Erro no servidor ao atualizar progresso.' });
+    await user.save();
+    res.json({ message: 'Progresso salvo!', xpTotal: user.xp, progress: user.progress });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao salvar progresso.' });
   }
 });
-// =======================================================
-// ROTA 2: BUSCAR DADOS DO PERFIL (GET) - Para a Dashboard
-// http://localhost:5000/api/user/me
-// =======================================================
+
+// GET /api/user/me
 router.get('/me', auth, async (req, res) => {
   try {
-    const userId = req.user.userId || req.user.id || req.user._id; 
-    
-    // Busca o usuário, mas esconde a senha por segurança
-    const user = await User.findById(userId).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
-    }
-
+    const user = await User.findById(userId(req)).select('-password');
+    if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
     res.json(user);
-  } catch (error) {
-    console.error("Erro ao buscar perfil:", error);
-    res.status(500).json({ message: 'Erro no servidor ao buscar o perfil.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar perfil.' });
   }
 });
 
-// =======================================================
-// ROTA 3: GERAR RELATÓRIO DE DADOS PARA PYTHON (GET)
-// http://localhost:5000/api/user/report
-// =======================================================
-router.get('/report', auth, async (req, res) => {
+// GET /api/user/analytics — dados completos para o dashboard
+router.get('/analytics', auth, async (req, res) => {
   try {
-    const userId = req.user.userId || req.user.id || req.user._id; 
-    const user = await User.findById(userId).select('-password');
-    
-    if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado.' });
-    }
+    const user = await User.findById(userId(req)).select('-password');
+    if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
 
-    // Vamos cruzar os dados de progresso com os livros reais para montar o relatório
-    let materiasLidas = {};
-    const detalhesProgresso = await Promise.all(user.progress.map(async (p) => {
-      // Usamos a verificação de ObjectId para não quebrar caso haja um ID de teste antigo
+    // Cruzar progresso com livros
+    const progressDetails = await Promise.all(user.progress.map(async (p) => {
       let bookInfo = null;
-      if (mongoose.Types.ObjectId.isValid(p.bookId)) {
-        bookInfo = await Book.findById(p.bookId);
-      }
+      if (mongoose.Types.ObjectId.isValid(p.bookId))
+        bookInfo = await Book.findById(p.bookId).select('title subject nodes');
 
-      const materia = bookInfo ? bookInfo.subject : "Desconhecida";
-
-      // Contabiliza as preferências de matérias do usuário
-      if (bookInfo) {
-        materiasLidas[materia] = (materiasLidas[materia] || 0) + 1;
-      }
+      const nodesDone = bookInfo
+        ? bookInfo.nodes.findIndex(n => n.id === p.currentNode) + 1
+        : 0;
+      const totalNodes = bookInfo ? bookInfo.nodes.length : 0;
 
       return {
-        id_livro: p.bookId,
-        titulo_livro: bookInfo ? bookInfo.title : "Livro Excluído",
-        materia: materia,
-        cena_parada: p.currentNode
+        bookId: p.bookId,
+        titulo: bookInfo?.title || 'Livro excluído',
+        materia: bookInfo?.subject || 'Desconhecida',
+        cenesCompletas: nodesDone,
+        totalCenas: totalNodes,
+        percentual: totalNodes > 0 ? Math.round((nodesDone / totalNodes) * 100) : 0,
       };
     }));
 
-    // Determina a matéria favorita (A que mais aparece)
-    let materiaFavorita = "Nenhuma ainda";
-    if (Object.keys(materiasLidas).length > 0) {
-      materiaFavorita = Object.keys(materiasLidas).reduce((a, b) => materiasLidas[a] > materiasLidas[b] ? a : b);
-    }
+    // Distribuição por matéria
+    const materias = {};
+    progressDetails.forEach(p => {
+      materias[p.materia] = (materias[p.materia] || 0) + 1;
+    });
 
-    // Monta o Objeto Final perfeitamente formatado para um DataFrame do Python (Pandas)
-    const reportData = {
+    // Taxa de acerto e aprendizado
+    const total = user.answerLog.length;
+    const corretos = user.answerLog.filter(a => a.status === 'correto').length;
+    const parciais = user.answerLog.filter(a => a.status === 'parcial').length;
+    const taxaAcerto = total > 0 ? Math.round((corretos / total) * 100) : 0;
+    const taxaAprendizado = total > 0 ? Math.round(((corretos + parciais) / total) * 100) : 0;
+
+    // Sessões — últimos 7 dias
+    const ultimas7 = user.sessions.slice(-7);
+    const totalMinRead = ultimas7.reduce((s, d) => s + d.minutesRead, 0);
+    const totalMinIdle = ultimas7.reduce((s, d) => s + d.minutesIdle, 0);
+    const mediaMinDia = ultimas7.length > 0 ? Math.round(totalMinRead / ultimas7.length) : 0;
+
+    res.json({
+      xp: user.xp,
+      nivel: Math.floor(user.xp / 100) + 1,
+      taxaAcerto,
+      taxaAprendizado,
+      totalRespostas: total,
+      livrosIniciados: user.progress.length,
+      distribuicaoMaterias: materias,
+      progressoLivros: progressDetails,
+      sessoes: ultimas7,
+      mediaMinutosDia: mediaMinDia,
+      totalMinutosOcioso: totalMinIdle,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao gerar analytics.' });
+  }
+});
+
+// GET /api/user/report — exportação para Python/Excel
+router.get('/report', auth, async (req, res) => {
+  try {
+    const user = await User.findById(userId(req)).select('-password');
+    if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
+
+    const progressDetails = await Promise.all(user.progress.map(async (p) => {
+      let bookInfo = null;
+      if (mongoose.Types.ObjectId.isValid(p.bookId))
+        bookInfo = await Book.findById(p.bookId).select('title subject nodes');
+      const nodesDone = bookInfo
+        ? bookInfo.nodes.findIndex(n => n.id === p.currentNode) + 1
+        : 0;
+      return {
+        id_livro: p.bookId,
+        titulo: bookInfo?.title || 'Excluído',
+        materia: bookInfo?.subject || 'Desconhecida',
+        cenas_completas: nodesDone,
+        total_cenas: bookInfo?.nodes.length || 0,
+      };
+    }));
+
+    const total = user.answerLog.length;
+    const corretos = user.answerLog.filter(a => a.status === 'correto').length;
+    const parciais = user.answerLog.filter(a => a.status === 'parcial').length;
+
+    const materias = {};
+    progressDetails.forEach(p => { materias[p.materia] = (materias[p.materia] || 0) + 1; });
+    const materiaFavorita = Object.keys(materias).length > 0
+      ? Object.keys(materias).reduce((a, b) => materias[a] > materias[b] ? a : b)
+      : 'Nenhuma ainda';
+
+    res.json({
       aluno: {
         id: user._id,
         nome: user.name,
         email: user.email,
+        role: user.role,
         xp_total: user.xp,
-        cadastrado_em: user.createdAt
+        nivel: Math.floor(user.xp / 100) + 1,
+        cadastrado_em: user.createdAt,
       },
       metricas: {
         total_livros_iniciados: user.progress.length,
+        total_respostas: total,
+        respostas_corretas: corretos,
+        respostas_parciais: parciais,
+        respostas_erradas: total - corretos - parciais,
+        taxa_acerto_pct: total > 0 ? Math.round((corretos / total) * 100) : 0,
+        taxa_aprendizado_pct: total > 0 ? Math.round(((corretos + parciais) / total) * 100) : 0,
         materia_favorita: materiaFavorita,
-        distribuicao_materias: materiasLidas
+        distribuicao_materias: materias,
       },
-      historico_leitura: detalhesProgresso,
-      data_geracao_relatorio: new Date().toISOString()
-    };
+      sessoes: user.sessions,
+      historico_leitura: progressDetails,
+      log_respostas: user.answerLog,
+      data_geracao: new Date().toISOString(),
+    });
 
-    res.json(reportData);
-
-  } catch (error) {
-    console.error("Erro ao gerar relatório:", error);
-    res.status(500).json({ message: 'Erro no servidor ao gerar o relatório.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erro ao gerar relatório.' });
   }
 });
+
 module.exports = router;

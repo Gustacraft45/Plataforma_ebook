@@ -41,7 +41,13 @@ export default function BookReading() {
       const isCorrect = data.status === 'correto' || data.status === 'correct'
       const isPartial = data.status === 'parcial' || data.status === 'partial'
       if (isCorrect || isPartial) {
-        const res = await api.user.progress(id, scene.id, isCorrect)
+        const res = await api.user.progress({
+          bookId: id,
+          nodeId: scene.id,
+          currentNode: scene.id,
+          isCorrect,
+          status: data.status,
+        })
         if (res.ok) {
           setXp(res.data.xpTotal)
           const stored = JSON.parse(localStorage.getItem('user') || '{}')
