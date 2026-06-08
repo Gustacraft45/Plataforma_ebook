@@ -200,15 +200,31 @@ export default function BookReading() {
         </div>
 
         <div className="read-body">
-          {/* Mapa */}
-          <div className="read-map">
-            {book.nodes.map((n, i) => (
-              <div key={n.id || i} style={{ display: 'flex', alignItems: 'center', gap: 4, flex: i < book.nodes.length - 1 ? 1 : 'none' }}>
-                <div className={`m-dot ${i < nodeIndex ? 'done' : i === nodeIndex ? 'current' : ''}`}>{i + 1}</div>
-                {i < book.nodes.length - 1 && <div className={`m-line ${i < nodeIndex ? 'done' : ''}`} />}
+          {/* Mapa — janela de 7 nós ao redor do atual */}
+          {(() => {
+            const total = book.nodes.length
+            const window = 3 // nós antes e depois do atual
+            const start = Math.max(0, nodeIndex - window)
+            const end = Math.min(total - 1, nodeIndex + window)
+            const dots = []
+            if (start > 0) dots.push({ type: 'ellipsis', key: 'el-start', label: `1…${start}` })
+            for (let i = start; i <= end; i++) dots.push({ type: 'dot', index: i, key: i })
+            if (end < total - 1) dots.push({ type: 'ellipsis', key: 'el-end', label: `${end + 2}…${total}` })
+            return (
+              <div className="read-map">
+                {dots.map(d => d.type === 'ellipsis'
+                  ? <span key={d.key} style={{ fontSize: 10, color: '#4a4d60', padding: '0 4px', whiteSpace: 'nowrap' }}>{d.label}</span>
+                  : (
+                    <div key={d.key} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div className={`m-dot ${d.index < nodeIndex ? 'done' : d.index === nodeIndex ? 'current' : ''}`}>{d.index + 1}</div>
+                      {d.index < end && <div className={`m-line ${d.index < nodeIndex ? 'done' : ''}`} />}
+                    </div>
+                  )
+                )}
+                <span style={{ marginLeft: 'auto', fontSize: 11, color: '#4a4d60', whiteSpace: 'nowrap' }}>{nodeIndex + 1} / {total}</span>
               </div>
-            ))}
-          </div>
+            )
+          })()}
 
           <div className="read-scene-meta">{book.subject} · {scene.title}</div>
           <h1 className="read-title">{scene.title}</h1>
