@@ -1,0 +1,357 @@
+{
+  "title": "Programação: Do Zero ao Futuro",
+  "subject": "Programação",
+  "characterName": "Kira & Bip",
+  "nodes": [
+    {
+      "id": "j1_c1",
+      "title": "🌱 J1C1 — O Que é Programar?",
+      "storyText": "Bip, o robô aprendiz, acorda pela primeira vez. Seus olhos piscam confusos. '...O que sou eu?' — ele pergunta. A mestra Kira sorri: 'Você é o resultado de um conjunto de instruções que eu escrevi. Programar é exatamente isso — dar ordens claras e precisas a uma máquina, passo a passo, para que ela resolva um problema.' Bip olha para as mãos de metal. 'Então eu sou... um programa?' — 'Exatamente. E hoje você vai aprender a criar outros como você.'",
+      "challengeQuestion": "Explique com suas próprias palavras o que é programação e dê um exemplo do dia a dia onde você segue uma sequência de passos para resolver algo (como uma receita de bolo ou um roteiro de viagem).",
+      "expectedAnswer": "Programação é o ato de escrever instruções sequenciais para que um computador execute tarefas. Um exemplo do dia a dia é uma receita de bolo: você mistura ingredientes em ordem, assa por um tempo específico — assim como o computador segue instruções na ordem exata que foram escritas."
+    },
+    {
+      "id": "j1_c2",
+      "title": "🌱 J1C2 — Variáveis: As Gavetas da Memória",
+      "storyText": "Bip precisava guardar informações. 'Mas onde coloco tudo isso?' — ele perguntou à mestra Kira, segurando uma pilha de papéis. Kira abriu uma parede cheia de gavetas etiquetadas: 'nome', 'idade', 'pontuação'. 'Cada gaveta é uma variável', ela explicou. 'Você dá um nome, guarda um valor lá dentro, e pode pegar de volta quando quiser.' Bip colocou seu nome na gaveta 'nome'. A gaveta fechou. Ele abriu novamente — e seu nome estava lá.",
+      "challengeQuestion": "Declare três variáveis em qualquer linguagem de programação (Python, JavaScript ou pseudocódigo): uma para guardar seu nome, uma para sua idade e uma para sua altura. Mostre como você atribuiria valores a elas.",
+      "expectedAnswer": "Exemplo em Python: nome = 'Ana' / idade = 20 / altura = 1.65. Em JavaScript: let nome = 'Ana'; let idade = 20; let altura = 1.65. Uma variável é um espaço nomeado na memória do programa onde um valor pode ser armazenado e recuperado."
+    },
+    {
+      "id": "j1_c3",
+      "title": "🌱 J1C3 — Tipos de Dados: O Idioma das Informações",
+      "storyText": "Bip cometeu um erro: tentou somar a palavra 'cinco' com o número 3. O sistema travou. Kira suspirou: 'Cada dado tem um tipo, Bip. Números inteiros, números decimais, textos, verdadeiro ou falso — cada um se comporta de forma diferente.' Ela mostrou uma tabela: int, float, string, boolean. 'Antes de guardar qualquer coisa, você precisa saber com o que está lidando.' Bip nunca mais confundiu uma string com um inteiro.",
+      "challengeQuestion": "Identifique o tipo de dado (inteiro, decimal/float, texto/string ou booleano) para cada um dos seguintes valores: 42, 'Olá mundo', 3.14, True, 'false', 0. Justifique sua resposta.",
+      "expectedAnswer": "42 = inteiro (int); 'Olá mundo' = string (texto); 3.14 = float (decimal); True = booleano; 'false' = string (está entre aspas, então é texto); 0 = inteiro. O tipo booleano representa apenas verdadeiro/falso. A aspas transforma qualquer coisa em texto."
+    },
+    {
+      "id": "j1_c4",
+      "title": "🌱 J1C4 — Operadores: A Calculadora da Lógica",
+      "storyText": "A missão era calcular quantas maçãs sobravam após dividir entre amigos. Bip pegou o lápis e hesitou: como uma máquina calcula? Kira mostrou os operadores aritméticos: +, -, *, /. E depois os de comparação: ==, !=, >, <. 'Com esses símbolos', ela disse, 'você pode calcular, comparar e decidir.' Bip usou o operador % — o resto da divisão — e descobriu que sobrariam 2 maçãs. Ele sorriu pela primeira vez.",
+      "challengeQuestion": "Calcule e diga o resultado: 10 + 3, 10 - 3, 10 * 3, 10 / 3, 10 // 3 (divisão inteira), 10 % 3 (resto). Explique também o que os operadores == e != fazem.",
+      "expectedAnswer": "10+3=13; 10-3=7; 10*3=30; 10/3≈3.33; 10//3=3 (divisão inteira descarta o decimal); 10%3=1 (resto da divisão). == verifica se dois valores são iguais (retorna True/False). != verifica se são diferentes."
+    },
+    {
+      "id": "j1_c5",
+      "title": "🌱 J1C5 — Condicionais: O Cruzamento das Decisões",
+      "storyText": "Bip chegou a um cruzamento. Um sinal dizia: 'SE chovendo, pegue o guarda-chuva'. Era exatamente isso que Kira ensinava: o 'if'. 'O programa precisa tomar decisões baseadas em condições', ela explicou. 'Se algo é verdadeiro, faz uma coisa. Senão (else), faz outra.' Bip olhou para o céu. Estava claro. Ele seguiu sem guarda-chuva — e chegou ao destino seco.",
+      "challengeQuestion": "Escreva em pseudocódigo ou Python um bloco if/else que verifica se um número é maior que 10. Se for, imprime 'Grande'; caso contrário, imprime 'Pequeno'. Depois adapte para verificar se é par ou ímpar.",
+      "expectedAnswer": "Python: if numero > 10: print('Grande') / else: print('Pequeno'). Para par/ímpar: if numero % 2 == 0: print('Par') / else: print('Ímpar'). O operador % retorna o resto — se for 0, o número é par."
+    },
+    {
+      "id": "j1_c6",
+      "title": "🌱 J1C6 — Laços de Repetição: O Loop Infinito (Controlado)",
+      "storyText": "Bip precisava imprimir 'Olá' 100 vezes. Começou a escrever manualmente... na linha 12, Kira parou ele. 'Existe um jeito melhor.' Ela escreveu um 'for' com 3 linhas que fazia tudo. Bip ficou boquiaberto. 'O loop é a ferramenta mais poderosa do programador', disse Kira. 'Repetir tarefas é o que computadores fazem de melhor.' Bip deletou suas 12 linhas e reescreveu com uma.",
+      "challengeQuestion": "Escreva um loop 'for' que imprime os números de 1 a 10. Depois escreva um loop 'while' que continua enquanto um número for menor que 5, incrementando de 1 em 1. Explique a diferença entre for e while.",
+      "expectedAnswer": "For: for i in range(1, 11): print(i). While: n=0; while n<5: print(n); n+=1. Diferença: 'for' é usado quando sabemos quantas vezes repetir; 'while' é usado quando a condição de parada depende de algo que pode mudar durante a execução."
+    },
+    {
+      "id": "j1_c7",
+      "title": "🌱 J1C7 — Funções: Empacotando Superpoderes",
+      "storyText": "Kira mostrou o código: 50 linhas repetidas em 7 lugares diferentes. 'Cada vez que você copia e cola, você cria um problema futuro', ela disse. 'Se precisar mudar, muda em 7 lugares.' Ela então criou uma função chamada 'calcular_media' e chamou uma única vez em cada lugar. 'Funções são blocos de código reutilizável', explicou. Bip entendeu: funções são como ferramentas que você cria uma vez e usa para sempre.",
+      "challengeQuestion": "Crie uma função chamada 'saudacao' que recebe um parâmetro 'nome' e retorna (ou imprime) a mensagem 'Olá, [nome]! Bem-vindo.' Depois crie outra função 'soma' que recebe dois números e retorna a soma deles. Mostre como chamá-las.",
+      "expectedAnswer": "def saudacao(nome): return f'Olá, {nome}! Bem-vindo.' / def soma(a, b): return a + b. Chamada: saudacao('Ana') retorna 'Olá, Ana! Bem-vindo.'; soma(3, 4) retorna 7. Funções podem ter parâmetros (entradas) e retorno (saída)."
+    },
+    {
+      "id": "j1_c8",
+      "title": "🌱 J1C8 — Listas: Guardando Muitos Valores",
+      "storyText": "Bip precisava guardar 100 nomes de alunos. 'Crio 100 variáveis?' — ele perguntou, já cansado. Kira riu: 'Não. Você usa uma lista.' Com colchetes, ela guardou todos os 100 nomes em uma única estrutura. 'Uma lista é como um armário com gavetas numeradas', ela explicou. 'Você acessa pelo índice — e o índice começa em zero.' Bip quase protestou, mas aceitou. Zero era o novo um.",
+      "challengeQuestion": "Crie uma lista com 5 frutas. Depois: acesse a primeira e a última fruta pelo índice, adicione uma nova fruta ao final (método append), remova uma fruta (método remove ou pop), e mostre como percorrer toda a lista com um for.",
+      "expectedAnswer": "frutas = ['maçã','banana','uva','manga','kiwi']. frutas[0]='maçã' (primeira); frutas[-1]='kiwi' (última). frutas.append('laranja') adiciona. frutas.remove('banana') remove. for f in frutas: print(f) percorre a lista."
+    },
+    {
+      "id": "j1_c9",
+      "title": "🌱 J1C9 — Dicionários: Dados com Identidade",
+      "storyText": "Bip estava confuso. Uma lista com 10 informações sobre uma pessoa — qual índice era o nome? O 0? O 2? Kira apresentou os dicionários: estruturas onde cada valor tem uma chave com nome. 'Ao invés de aluno[0], você escreve aluno[\"nome\"]', ela explicou. Bip criou seu primeiro dicionário e nunca mais confundiu qual dado era qual. 'Dicionários são para quando os dados precisam de identidade', disse Kira.",
+      "challengeQuestion": "Crie um dicionário chamado 'aluno' com as chaves: nome, idade, curso e nota_final. Atribua valores a cada chave. Depois mostre como acessar apenas o nome e como atualizar a nota_final. Por fim, adicione uma nova chave 'aprovado' com valor True.",
+      "expectedAnswer": "aluno = {'nome':'Ana','idade':20,'curso':'TI','nota_final':8.5}. Acesso: aluno['nome']. Atualização: aluno['nota_final']=9.0. Nova chave: aluno['aprovado']=True. Dicionários usam pares chave:valor e são mutáveis."
+    },
+    {
+      "id": "j1_c10",
+      "title": "🌱 J1C10 — Depuração: A Arte de Encontrar o Bug",
+      "storyText": "O programa de Bip travou. A tela mostrava: 'TypeError: unsupported operand type(s)'. Kira não consertou — ela ensinou Bip a conssertar. 'Depurar é a habilidade mais importante de um programador', ela disse. 'Você lê o erro, localiza a linha, entende o que está errado e corrige.' Bip respirou fundo. Leu a mensagem. Entendeu. Era uma string sendo somada com um inteiro. Converteu. Funcionou. 'Parabéns', disse Kira. 'Você acabou de virar um programador de verdade.'",
+      "challengeQuestion": "Identifique e corrija os erros nos trechos abaixo: 1) idade = '25' / resultado = idade + 5 / print(resultado). 2) def somar(a, b) return a + b. 3) frutas = ['maçã', 'banana' / print(frutas[0]). Explique cada erro encontrado.",
+      "expectedAnswer": "1) Erro de tipo: '25' é string. Correção: idade = int('25'). 2) Falta dos dois-pontos: def somar(a,b): return a+b. 3) Falta fechar o colchete: frutas = ['maçã','banana']. Erros comuns: TypeError (tipo errado), SyntaxError (sintaxe inválida), IndexError (índice fora do alcance)."
+    },
+    {
+      "id": "j2_c1",
+      "title": "⚙️ J2C1 — Algoritmos: Receitas para Resolver Problemas",
+      "storyText": "O novo desafio de Bip era ordenar uma pilha de cartas embaralhadas. Kira parou ele antes de começar: 'Antes de codificar, pense no algoritmo.' Um algoritmo, ela explicou, é uma sequência finita e ordenada de passos para resolver um problema. 'Todo grande programa começa com um bom algoritmo desenhado no papel.' Bip pegou o lápis, esboçou os passos — comparar, trocar, repetir — e só então abriu o editor. O código ficou limpo da primeira vez.",
+      "challengeQuestion": "Descreva em passos (pseudocódigo ou linguagem natural) um algoritmo para encontrar o maior número em uma lista de 5 números sem usar funções prontas como max(). Pense: como você faria isso manualmente?",
+      "expectedAnswer": "1. Defina uma variável 'maior' com o primeiro número da lista. 2. Para cada número restante na lista: se o número atual for maior que 'maior', atualize 'maior'. 3. Ao terminar, 'maior' contém o maior valor. Este é o algoritmo de busca linear de máximo, O(n)."
+    },
+    {
+      "id": "j2_c2",
+      "title": "⚙️ J2C2 — Busca Linear e Binária",
+      "storyText": "Bip precisava encontrar o número 73 em uma lista de 1000 elementos. A busca linear checou um por um — demorou. Depois, com a lista ordenada, ele usou a busca binária: dividiu ao meio, checou se 73 era maior ou menor, descartou metade, repetiu. Em apenas 10 passos achou o número. 'Log₂(1000) ≈ 10', disse Kira sorrindo. 'É a diferença entre eficiência e força bruta.'",
+      "challengeQuestion": "Explique a diferença entre busca linear e busca binária. Para uma lista de 1024 elementos: quantas comparações a busca linear faz no pior caso? E a busca binária? Qual é o pré-requisito para usar a busca binária?",
+      "expectedAnswer": "Busca linear: verifica elemento por elemento, pior caso = 1024 comparações (O(n)). Busca binária: divide ao meio a cada passo, pior caso = log₂(1024) = 10 comparações (O(log n)). Pré-requisito: a lista precisa estar ORDENADA para a busca binária funcionar."
+    },
+    {
+      "id": "j2_c3",
+      "title": "⚙️ J2C3 — Ordenação: Bubble Sort e Selection Sort",
+      "storyText": "As cartas ainda estavam embaralhadas. Kira mostrou dois métodos. O Bubble Sort: compara vizinhos e troca, os maiores 'borbulham' para o final. O Selection Sort: encontra o menor elemento e coloca na posição certa, repetindo. Bip executou os dois. O Bubble Sort parecia mais intuitivo, mas ambos tinham o mesmo problema: com milhares de elementos, eram lentos. 'Há algoritmos melhores', disse Kira. 'Mas entender esses é o primeiro passo.'",
+      "challengeQuestion": "Explique passo a passo como o Bubble Sort ordena a lista [5, 3, 8, 1]. Mostre cada troca realizada. Quantas passagens (iterações externas) são necessárias no pior caso para uma lista de N elementos?",
+      "expectedAnswer": "Passagem 1: [3,5,8,1]→[3,5,8,1]→[3,5,1,8]. Passagem 2: [3,5,1,8]→[3,1,5,8]. Passagem 3: [1,3,5,8]. Resultado: [1,3,5,8]. No pior caso são N-1 passagens para N elementos. Complexidade: O(n²) — ineficiente para listas grandes."
+    },
+    {
+      "id": "j2_c4",
+      "title": "⚙️ J2C4 — Recursão: A Função que Chama a Si Mesma",
+      "storyText": "Bip estava diante de um espelho que refletia outro espelho. 'Isso é recursão?', ele perguntou. Kira riu: 'Quase. Recursão é quando uma função resolve um problema chamando a si mesma com uma versão menor do problema.' Ela escreveu o fatorial: fatorial(5) = 5 × fatorial(4) = 5 × 4 × fatorial(3)... até chegar em fatorial(1) = 1. 'O caso base é o que para a recursão', ela disse. 'Sem ele, é o loop infinito do inferno.'",
+      "challengeQuestion": "Escreva uma função recursiva para calcular o fatorial de um número n (onde fatorial(0) = 1 e fatorial(n) = n × fatorial(n-1)). Trace manualmente a execução de fatorial(4), mostrando cada chamada recursiva.",
+      "expectedAnswer": "def fatorial(n): if n==0: return 1; return n * fatorial(n-1). Trace: fatorial(4)→4×fatorial(3)→4×3×fatorial(2)→4×3×2×fatorial(1)→4×3×2×1×fatorial(0)→4×3×2×1×1=24. O caso base (n==0) é obrigatório para parar a recursão."
+    },
+    {
+      "id": "j2_c5",
+      "title": "⚙️ J2C5 — Pilhas e Filas: Estruturas de Controle",
+      "storyText": "Na cozinha de dados, havia duas estruturas. A Pilha (Stack): como uma pilha de pratos — o último a entrar é o primeiro a sair (LIFO). A Fila (Queue): como uma fila de banco — o primeiro a entrar é o primeiro a sair (FIFO). Bip usou a pilha para desfazer ações (Ctrl+Z) e a fila para processar pedidos em ordem. 'Estruturas de dados não são só teoria', disse Kira. 'Você já as usou hoje sem saber.'",
+      "challengeQuestion": "Explique a diferença entre Pilha (Stack/LIFO) e Fila (Queue/FIFO) com um exemplo prático de uso de cada uma. Descreva as operações básicas de uma pilha (push e pop) e de uma fila (enqueue e dequeue).",
+      "expectedAnswer": "Pilha (LIFO): último a entrar, primeiro a sair. Exemplo: histórico de navegação (botão voltar), Ctrl+Z. Operações: push (inserir no topo) e pop (remover do topo). Fila (FIFO): primeiro a entrar, primeiro a sair. Exemplo: fila de impressão, atendimento ao cliente. Operações: enqueue (inserir no fim) e dequeue (remover do início)."
+    },
+    {
+      "id": "j2_c6",
+      "title": "⚙️ J2C6 — Árvores: Hierarquias em Código",
+      "storyText": "Bip viu o sistema de arquivos do computador. Uma pasta raiz, pastas dentro de pastas, arquivos nas pontas. 'Isso é uma árvore', disse Kira. Cada elemento é um nó. O nó do topo é a raiz. Os nós sem filhos são as folhas. A Árvore Binária de Busca organiza os dados: menores à esquerda, maiores à direita. Buscar um elemento vira quase uma busca binária automática. Bip entendeu por que bancos de dados são tão rápidos.",
+      "challengeQuestion": "Descreva os termos: raiz, nó, folha, altura e nível de uma árvore. Em uma Árvore Binária de Busca (BST), onde são inseridos valores menores que a raiz? E maiores? Insira os números 5, 3, 7, 1, 4 em uma BST e desenhe (em texto) a estrutura resultante.",
+      "expectedAnswer": "Raiz: nó inicial (sem pai). Nó: elemento da árvore. Folha: nó sem filhos. Altura: distância da raiz à folha mais distante. Nível: profundidade de um nó. BST: menores vão à esquerda, maiores à direita. Inserindo 5,3,7,1,4: raiz=5, esq=3(filhos:1,4), dir=7. Busca em O(log n) em árvores balanceadas."
+    },
+    {
+      "id": "j2_c7",
+      "title": "⚙️ J2C7 — Complexidade: Big O Notation",
+      "storyText": "Dois programas resolviam o mesmo problema. Um levava 1 segundo para 100 elementos, 100 segundos para 10.000. O outro levava 1 segundo para qualquer quantidade. Kira sorriu: 'Agora você precisa entender o Big O.' A notação Big O descreve como o tempo de execução cresce em relação ao tamanho da entrada. O(1), O(n), O(n²), O(log n) — cada um diz algo sobre a eficiência do algoritmo. 'Código que funciona é bom', disse Kira. 'Código eficiente é melhor.'",
+      "challengeQuestion": "Classifique cada operação com sua complexidade Big O e justifique: 1) Acessar um elemento de uma lista pelo índice. 2) Busca linear em uma lista de N elementos. 3) Bubble Sort em N elementos. 4) Busca binária em lista ordenada. 5) Um loop dentro de outro loop sobre N elementos.",
+      "expectedAnswer": "1) O(1) - acesso direto pelo índice, tempo constante. 2) O(n) - no pior caso verifica todos os N elementos. 3) O(n²) - dois loops aninhados sobre N elementos. 4) O(log n) - divide a busca ao meio a cada passo. 5) O(n²) - para cada um dos N elementos, percorre outros N."
+    },
+    {
+      "id": "j2_c8",
+      "title": "⚙️ J2C8 — Programação Orientada a Objetos: Classes e Objetos",
+      "storyText": "Bip viu uma fábrica de robôs. Cada robô era diferente — nomes, cores, funções distintas — mas todos saíam do mesmo molde. 'Esse molde é uma Classe', disse Kira. 'Cada robô fabricado é um Objeto, uma instância da classe.' A classe Robot tinha atributos (nome, cor) e métodos (andar, falar). Bip olhou para si mesmo. Era uma instância da classe Robot, criada pela classe Kira. 'Espera—', ele disse. Kira já havia saído da sala.",
+      "challengeQuestion": "Crie uma classe 'Cachorro' em Python com os atributos 'nome' e 'raça' (definidos no __init__) e um método 'latir' que imprime '[nome] diz: Au au!'. Depois crie dois objetos (instâncias) diferentes dessa classe e chame o método latir em cada um.",
+      "expectedAnswer": "class Cachorro: def __init__(self, nome, raca): self.nome=nome; self.raca=raca; def latir(self): print(f'{self.nome} diz: Au au!'). rex=Cachorro('Rex','Labrador'); luna=Cachorro('Luna','Poodle'); rex.latir(); luna.latir(). __init__ é o construtor, self referencia a instância atual."
+    },
+    {
+      "id": "j2_c9",
+      "title": "⚙️ J2C9 — Herança e Polimorfismo: A Família das Classes",
+      "storyText": "Kira criou a classe Animal com o método falar(). Depois criou Cachorro e Gato, ambos herdando de Animal — mas cada um sobrescrevia falar() do seu jeito. 'Herança é reaproveitar código', ela explicou. 'Polimorfismo é quando objetos diferentes respondem ao mesmo comando de formas diferentes.' Bip chamou falar() em uma lista com um Cachorro e um Gato. Um latiu, o outro miou. Mesmo comando. Comportamentos diferentes. Isso era elegante.",
+      "challengeQuestion": "Crie uma classe 'Animal' com um método 'fazer_som' que imprime 'Som genérico'. Depois crie as classes 'Cachorro' e 'Gato' que herdam de Animal e sobrescrevem 'fazer_som' com sons específicos. Crie uma lista com um objeto de cada tipo e chame 'fazer_som' em todos usando um loop.",
+      "expectedAnswer": "class Animal: def fazer_som(self): print('Som genérico'). class Cachorro(Animal): def fazer_som(self): print('Au au!'). class Gato(Animal): def fazer_som(self): print('Miau!'). animais=[Cachorro(),Gato()]; for a in animais: a.fazer_som(). Polimorfismo: mesmo método, comportamentos diferentes por classe."
+    },
+    {
+      "id": "j2_c10",
+      "title": "⚙️ J2C10 — Módulos e Bibliotecas: O Poder do Reúso",
+      "storyText": "Bip estava prestes a escrever código para calcular raiz quadrada quando Kira o parou: 'Antes de criar, verifique se já existe.' Ela importou o módulo 'math' com uma linha e acessou dezenas de funções matemáticas prontas. 'A maior superpoder do programador moderno é saber usar bibliotecas', disse ela. 'Você não precisa reinventar a roda — só precisa saber onde encontrá-la.' Bip aprendeu a pesquisar documentação. Sua produtividade triplicou.",
+      "challengeQuestion": "Explique a diferença entre módulo, biblioteca e framework. Dê um exemplo de cada um. Como você importa apenas uma função específica de um módulo em Python (ex: importar apenas sqrt do módulo math)? Qual a vantagem disso em relação a importar o módulo inteiro?",
+      "expectedAnswer": "Módulo: arquivo .py com funções/classes (ex: math). Biblioteca: coleção de módulos (ex: NumPy). Framework: estrutura completa que dita a arquitetura (ex: Django). Importação específica: from math import sqrt — vantagem: carrega menos na memória, deixa o código mais claro sobre o que está sendo usado."
+    },
+    {
+      "id": "j3_c1",
+      "title": "🌐 J3C1 — Como a Web Funciona: HTTP e Requisições",
+      "storyText": "Bip digitou um endereço no navegador. Em milissegundos, uma página apareceu. 'Como isso funciona?', ele perguntou. Kira explicou: o navegador envia uma requisição HTTP para um servidor, que processa e devolve uma resposta. É como mandar uma carta e receber a resposta. GET, POST, PUT, DELETE — cada verbo tem um significado. O status 200 significa sucesso, 404 significa não encontrado, 500 é erro do servidor. 'A web é só troca de mensagens', disse Kira. 'Mas muito bem organizada.'",
+      "challengeQuestion": "Explique o ciclo de uma requisição HTTP: o que acontece desde quando você digita uma URL até a página aparecer? Descreva os verbos HTTP GET, POST, PUT e DELETE e quando cada um é usado. O que significam os status codes 200, 201, 400, 404 e 500?",
+      "expectedAnswer": "Ciclo: DNS resolve URL→IP, navegador envia requisição HTTP ao servidor, servidor processa, retorna resposta com status code e corpo. GET: buscar dados. POST: criar recurso. PUT: atualizar recurso. DELETE: remover. 200=OK, 201=Criado, 400=Requisição inválida, 404=Não encontrado, 500=Erro interno do servidor."
+    },
+    {
+      "id": "j3_c2",
+      "title": "🌐 J3C2 — HTML: A Estrutura da Página",
+      "storyText": "Kira mostrou uma página web como se fosse uma casa. O HTML é a estrutura: paredes, chão, teto. Sem HTML, não há onde colocar nada. As tags são os blocos de construção: <h1> para títulos, <p> para parágrafos, <a> para links, <img> para imagens, <div> para contêineres. 'HTML não é programação', disse Kira, antecipando a pergunta de Bip. 'É marcação — você descreve o que cada coisa é, não o que ela faz.'",
+      "challengeQuestion": "Crie um arquivo HTML básico com estrutura completa (html, head, body), um título de página (tag title), um título visível h1, um parágrafo, um link para google.com e uma lista não-ordenada com 3 itens. Explique o que a tag <head> contém vs a tag <body>.",
+      "expectedAnswer": "<!DOCTYPE html><html><head><title>Minha Página</title></head><body><h1>Olá</h1><p>Texto.</p><a href='https://google.com'>Google</a><ul><li>Item1</li><li>Item2</li><li>Item3</li></ul></body></html>. Head: metadados, título, links para CSS/JS (invisível ao usuário). Body: conteúdo visível da página."
+    },
+    {
+      "id": "j3_c3",
+      "title": "🌐 J3C3 — CSS: Estilo e Beleza na Web",
+      "storyText": "A casa de Bip estava construída mas era cinza e sem graça. Kira chegou com CSS — o equivalente à pintura, decoração e móveis. Seletores apontam para elementos HTML; propriedades definem aparência. 'color' muda cor do texto, 'background' muda o fundo, 'font-size' muda o tamanho, 'margin' e 'padding' controlam espaçamento. O modelo de caixa (box model) definiu tudo. Bip pintou suas paredes de roxo e adicionou uma sombra. A casa finalmente tinha personalidade.",
+      "challengeQuestion": "Explique o Box Model do CSS (content, padding, border, margin). Escreva CSS que: muda a cor do texto de todos os parágrafos para azul, coloca fundo cinza claro no body, e centraliza um h1. Qual a diferença entre usar class (.) e id (#) como seletores CSS?",
+      "expectedAnswer": "Box Model: content (conteúdo), padding (espaço interno), border (borda), margin (espaço externo). CSS: p{color:blue;} body{background:#f0f0f0;} h1{text-align:center;}. Class (.): pode ser usada em vários elementos. ID (#): único por página, maior especificidade. Prefira classes para reutilização."
+    },
+    {
+      "id": "j3_c4",
+      "title": "🌐 J3C4 — JavaScript: Dando Vida às Páginas",
+      "storyText": "HTML é estrutura, CSS é estilo — mas a página ainda era estática. Bip clicou em um botão e nada aconteceu. Kira adicionou JavaScript: a linguagem que roda no navegador e manipula a página em tempo real. Event listeners, DOM manipulation, funções — de repente clicar no botão mudava o conteúdo, animava elementos, validava formulários. 'JavaScript transforma páginas em aplicações', disse Kira. 'É o que dá vida à web moderna.'",
+      "challengeQuestion": "Explique o que é o DOM (Document Object Model). Escreva JavaScript que: seleciona um elemento pelo id 'meuBotao', adiciona um event listener de 'click' que ao ser ativado muda o texto de um elemento com id 'mensagem' para 'Botão clicado!'. Qual a diferença entre innerHTML e textContent?",
+      "expectedAnswer": "DOM: representação em árvore da página HTML que o JS pode manipular. JS: document.getElementById('meuBotao').addEventListener('click', function(){ document.getElementById('mensagem').textContent='Botão clicado!'; }). innerHTML: permite inserir HTML (risco XSS se vier do usuário). textContent: apenas texto puro, mais seguro."
+    },
+    {
+      "id": "j3_c5",
+      "title": "🌐 J3C5 — APIs REST: A Língua dos Serviços Web",
+      "storyText": "Bip queria mostrar a previsão do tempo em sua página. Kira mostrou como consumir uma API: uma URL que, quando chamada, devolve dados em JSON. 'APIs REST são como garçons', ela explicou. 'Você faz um pedido (requisição), eles vão à cozinha (servidor) e trazem o que pediu (resposta).' Com fetch() e async/await, Bip chamou a API do clima e exibiu os dados. Sem precisar criar o backend do zero. A web era uma rede de serviços cooperando.",
+      "challengeQuestion": "O que é uma API REST? Escreva um exemplo usando fetch() em JavaScript para fazer uma requisição GET a 'https://api.exemplo.com/usuarios' e imprimir os dados recebidos no console. Explique o que é JSON e por que ele é usado para trocar dados entre sistemas.",
+      "expectedAnswer": "API REST: interface que permite sistemas se comunicarem via HTTP com recursos bem definidos. fetch('https://api.exemplo.com/usuarios').then(r=>r.json()).then(data=>console.log(data)). Com async/await: const res=await fetch(url); const data=await res.json(). JSON: formato leve de texto para troca de dados, baseado em pares chave:valor, legível por humanos e máquinas."
+    },
+    {
+      "id": "j3_c6",
+      "title": "🌐 J3C6 — Bancos de Dados Relacionais: SQL",
+      "storyText": "Os dados de Bip estavam espalhados em arquivos de texto. Eram difíceis de buscar, comparar e relacionar. Kira apresentou o SQL: a linguagem dos bancos relacionais. Tabelas com colunas e linhas. Chaves primárias identificando cada registro. JOINs conectando tabelas. SELECT buscando, INSERT criando, UPDATE modificando, DELETE removendo. 'Dados organizados são dados úteis', disse Kira. Bip criou seu primeiro banco e fez sua primeira query. Os dados finalmente tinham ordem.",
+      "challengeQuestion": "Escreva queries SQL para: 1) Criar uma tabela 'alunos' com colunas id (chave primária auto-incremento), nome (texto) e nota (decimal). 2) Inserir dois alunos. 3) Selecionar todos os alunos com nota maior que 7. 4) Atualizar a nota de um aluno específico. 5) Deletar um aluno pelo id.",
+      "expectedAnswer": "1)CREATE TABLE alunos(id INT PRIMARY KEY AUTO_INCREMENT, nome VARCHAR(100), nota DECIMAL(4,2)); 2)INSERT INTO alunos(nome,nota)VALUES('Ana',8.5),('Carlos',6.0); 3)SELECT*FROM alunos WHERE nota>7; 4)UPDATE alunos SET nota=9.0 WHERE id=1; 5)DELETE FROM alunos WHERE id=2;"
+    },
+    {
+      "id": "j3_c7",
+      "title": "🌐 J3C7 — MongoDB: Bancos de Dados NoSQL",
+      "storyText": "Nem todo dado é tabular. Bip tinha documentos com estruturas variadas: alguns com 3 campos, outros com 20. No SQL, isso era complicado. Kira apresentou o MongoDB: um banco NoSQL que guarda documentos JSON. Sem schema fixo. Flexível. Coleções ao invés de tabelas, documentos ao invés de linhas. 'NoSQL não é 'não use SQL'', Kira esclareceu. 'É uma abordagem diferente para tipos diferentes de dados.' Bip entendeu: cada ferramenta tem seu lugar.",
+      "challengeQuestion": "Explique a diferença entre banco de dados relacional (SQL) e não-relacional (NoSQL). No MongoDB, o que são: database, collection e document? Escreva um exemplo de documento MongoDB (em formato JSON) para um usuário com nome, email e lista de hobbies. Quando você escolheria MongoDB ao invés de MySQL?",
+      "expectedAnswer": "SQL: dados estruturados em tabelas com schema fixo, relações via JOIN. NoSQL: dados flexíveis, sem schema rígido, escala horizontalmente. MongoDB: database=banco, collection=conjunto de documentos (≈tabela), document=objeto JSON (≈linha). Ex: {nome:'Ana',email:'ana@email.com',hobbies:['leitura','código']}. Use MongoDB para dados variáveis, alta escala, documentos aninhados."
+    },
+    {
+      "id": "j3_c8",
+      "title": "🌐 J3C8 — Autenticação e Segurança: Protegendo os Dados",
+      "storyText": "Qualquer um conseguia acessar todos os dados de Bip. Kira ficou horrorizada. 'Segurança não é opcional', ela disse com firmeza. Ela implementou autenticação com JWT: ao fazer login, o servidor gera um token assinado. Nas próximas requisições, o token é enviado no cabeçalho — o servidor verifica e libera o acesso. Senhas nunca são guardadas em texto puro: usa-se hash com bcrypt. 'Dados dos usuários são sagrados', disse Kira. 'Protegê-los é responsabilidade do desenvolvedor.'",
+      "challengeQuestion": "Explique o que é hashing de senhas e por que nunca devemos guardar senhas em texto puro. O que é JWT (JSON Web Token) e como funciona o fluxo de autenticação com ele (login → token → requisições protegidas)? Qual a diferença entre autenticação e autorização?",
+      "expectedAnswer": "Hash: função unidirecional que transforma senha em código irreversível (ex: bcrypt). Nunca texto puro pois se o banco vazar, senhas ficam expostas. JWT: token codificado e assinado com header.payload.signature. Fluxo: usuário loga→servidor verifica senha→gera JWT→cliente envia JWT em cada requisição→servidor valida assinatura. Autenticação: verificar identidade (quem é). Autorização: verificar permissões (o que pode fazer)."
+    },
+    {
+      "id": "j3_c9",
+      "title": "🌐 J3C9 — Git e Controle de Versão",
+      "storyText": "O arquivo de Bip foi corrompido. Sem backup. Três dias de trabalho perdidos. Kira não disse 'eu avisei' — ela ensinou Git. Um sistema de controle de versão que fotografa o estado do código a cada commit. Branches para trabalhar em paralelo sem quebrar o principal. Merge para unir trabalhos. Push para enviar ao GitHub. Pull para baixar do repositório. 'Git não é só segurança', disse Kira. 'É colaboração. É história. É profissionalismo.'",
+      "challengeQuestion": "Explique os conceitos: repositório, commit, branch, merge e clone no Git. Escreva a sequência de comandos Git para: inicializar um repositório, adicionar todos os arquivos, fazer um commit com mensagem e enviar para um repositório remoto já configurado como 'origin'.",
+      "expectedAnswer": "Repositório: pasta versionada pelo Git. Commit: snapshot do estado do código. Branch: linha paralela de desenvolvimento. Merge: unir branches. Clone: copiar repositório remoto. Comandos: git init → git add . → git commit -m 'Mensagem' → git push origin main. Para branches: git checkout -b nova-feature → (desenvolve) → git merge nova-feature."
+    },
+    {
+      "id": "j3_c10",
+      "title": "🌐 J3C10 — Deploy: Colocando o Projeto no Ar",
+      "storyText": "O projeto de Bip funcionava na sua máquina. Mas só na sua máquina. Kira apontou para nuvem: 'Deploy é o ato de colocar sua aplicação em um servidor acessível ao mundo.' Ela mostrou opções: Vercel para frontend, Railway para backend, MongoDB Atlas para banco na nuvem. Variáveis de ambiente para não expor segredos. Build para otimizar o código. Em 20 minutos, o projeto de Bip estava acessível de qualquer lugar do planeta. 'Agora é real', disse Kira. Bip abriu o link no celular e chorou (internamente, pois era um robô).",
+      "challengeQuestion": "Explique o que é um processo de deploy. Qual a diferença entre ambiente de desenvolvimento, homologação/staging e produção? O que são variáveis de ambiente e por que são importantes para segurança (ex: chaves de API, senhas do banco)? Cite duas plataformas de hospedagem gratuitas para projetos web.",
+      "expectedAnswer": "Deploy: processo de disponibilizar a aplicação em servidor acessível. Dev: máquina local do desenvolvedor. Staging: ambiente idêntico à produção para testes finais. Produção: ambiente real, usado pelos usuários. Variáveis de ambiente: valores configurados fora do código (no servidor), não versionados no Git — evitam expor senhas/chaves. Plataformas gratuitas: Vercel, Netlify, Railway, Render."
+    },
+    {
+      "id": "j4_c1",
+      "title": "🚀 J4C1 — React: Interfaces Reativas",
+      "storyText": "A interface de Bip recarregava a página inteira a cada clique. Lento, feio, antiquado. Kira apresentou o React: uma biblioteca JavaScript para criar interfaces componentizadas. Cada parte da UI é um componente reutilizável. O estado (state) controla o que é exibido. Quando o estado muda, apenas as partes afetadas atualizam — não a página toda. 'É o Virtual DOM', explicou Kira. 'React calcula o mínimo necessário para atualizar a tela.' Bip reescreveu a interface. Era outra experiência.",
+      "challengeQuestion": "Explique os conceitos de componente, props e state no React. Escreva um componente funcional React chamado 'Contador' que exibe um número e tem um botão 'Incrementar' que aumenta o número em 1 ao ser clicado. Use o hook useState.",
+      "expectedAnswer": "Componente: função que retorna JSX (HTML no JS). Props: dados passados de pai para filho (somente leitura). State: dados internos do componente que, quando mudam, causam re-renderização. Contador: function Contador(){const [n,setN]=useState(0); return(<div><p>{n}</p><button onClick={()=>setN(n+1)}>Incrementar</button></div>)}"
+    },
+    {
+      "id": "j4_c2",
+      "title": "🚀 J4C2 — Node.js e Express: Backend com JavaScript",
+      "storyText": "Bip queria usar a mesma linguagem no frontend e no backend. Kira apontou para Node.js: JavaScript rodando fora do navegador, no servidor. Com Express, criar rotas era simples: app.get('/usuarios', handler). Middleware encadeava funções. Bip criou uma API REST em 30 linhas. 'Node é event-driven e non-blocking', explicou Kira. 'Perfeito para muitas conexões simultâneas.' Bip tinha um backend funcional antes do almoço.",
+      "challengeQuestion": "O que é Node.js e qual sua vantagem sobre outros ambientes de backend? Escreva um servidor Express básico que: escuta na porta 3000, tem uma rota GET '/ola' que retorna JSON {mensagem: 'Olá, mundo!'} e uma rota POST '/eco' que retorna o body da requisição. Inclua o require/import necessário.",
+      "expectedAnswer": "Node.js: runtime JS no servidor, single-thread com event loop não-bloqueante, ótimo para I/O intensivo. const express=require('express'); const app=express(); app.use(express.json()); app.get('/ola',(req,res)=>res.json({mensagem:'Olá, mundo!'})); app.post('/eco',(req,res)=>res.json(req.body)); app.listen(3000,()=>console.log('Rodando!'));"
+    },
+    {
+      "id": "j4_c3",
+      "title": "🚀 J4C3 — TypeScript: JavaScript com Superpoderes",
+      "storyText": "O projeto cresceu. O bug chegou: uma função esperava número mas recebeu string — erro em produção. Kira apresentou TypeScript: JavaScript com tipagem estática. 'Você declara os tipos das variáveis e parâmetros', ela explicou. 'O TypeScript avisa os erros antes de rodar o código.' Era como ter um revisor automático. Bip adicionou tipos a todo o projeto. Os bugs de tipo desapareceram. 'TypeScript não torna o código mais lento', disse Kira. 'Torna o desenvolvedor mais rápido.'",
+      "challengeQuestion": "Qual a principal diferença entre TypeScript e JavaScript? Reescreva a função abaixo em TypeScript, adicionando tipos nos parâmetros e no retorno: function calcularMedia(nota1, nota2, nota3) { return (nota1 + nota2 + nota3) / 3; }. Explique o que são interfaces no TypeScript e crie uma interface 'Usuario' com os campos id (number), nome (string) e email (string).",
+      "expectedAnswer": "TS: superset do JS com tipagem estática, detecta erros em tempo de compilação. function calcularMedia(nota1:number, nota2:number, nota3:number):number{return(nota1+nota2+nota3)/3;}. Interface: contrato que define a estrutura de um objeto. interface Usuario{id:number; nome:string; email:string;}. Vantagem: autocompletar no editor, refatoração segura, documentação automática."
+    },
+    {
+      "id": "j4_c4",
+      "title": "🚀 J4C4 — Testes: Garantindo Qualidade",
+      "storyText": "A cada nova funcionalidade, Bip quebrava algo que funcionava antes. Kira chamava isso de regressão. A solução: testes automatizados. Unit tests testam funções isoladas. Integration tests testam a combinação de partes. E2E tests simulam o usuário na interface. 'Testes não são perda de tempo', disse Kira. 'São investimento. Você escreve uma vez e eles protegem para sempre.' Bip escreveu seu primeiro teste. O botão verde do framework de testes apareceu. Sensação nova: confiança.",
+      "challengeQuestion": "Explique a diferença entre testes unitários, de integração e E2E (end-to-end). Escreva um teste unitário simples (pode usar pseudocódigo com sintaxe Jest) para a função soma(a, b) que retorna a+b. O teste deve verificar que soma(2,3) retorna 5 e que soma(-1,1) retorna 0. O que é TDD (Test-Driven Development)?",
+      "expectedAnswer": "Unitário: testa função/módulo isolado. Integração: testa interação entre módulos. E2E: testa fluxo completo como usuário real. Jest: test('soma 2+3',()=>{expect(soma(2,3)).toBe(5);}); test('soma -1+1',()=>{expect(soma(-1,1)).toBe(0);}). TDD: escreve o teste ANTES do código, código deve passar no teste (ciclo red-green-refactor). Garante código testável desde o início."
+    },
+    {
+      "id": "j4_c5",
+      "title": "🚀 J4C5 — Design Patterns: Soluções Reutilizáveis",
+      "storyText": "Bip reinventava a roda toda semana. Kira apresentou os Design Patterns: soluções testadas e nomeadas para problemas recorrentes. O Singleton garante uma única instância. O Observer notifica quando algo muda. O Factory cria objetos sem expor a lógica de criação. O MVC separa dados, lógica e interface. 'Esses padrões existem há décadas', disse Kira. 'Quando você os conhece, você fala a língua de todo programador experiente.' Bip começou a ver os padrões em todo código que lia.",
+      "challengeQuestion": "Explique o padrão MVC (Model-View-Controller): o que cada camada faz e como elas se comunicam. Dê um exemplo prático de onde cada camada estaria em uma aplicação web de listagem de produtos. Por que usar padrões de projeto em vez de criar soluções únicas para cada problema?",
+      "expectedAnswer": "Model: dados e regras de negócio (ex: classe Produto, consultas ao banco). View: apresentação/interface (ex: HTML da página de produtos). Controller: intermediário que recebe requisição, usa o Model e retorna para a View (ex: função que busca produtos e passa para o template). Padrões: comunicação clara entre devs, soluções comprovadas, manutenção facilitada, código previsível."
+    },
+    {
+      "id": "j4_c6",
+      "title": "🚀 J4C6 — Arquitetura de Software: Do Monolito ao Microsserviço",
+      "storyText": "O projeto de Bip cresceu demais. Um único arquivo gigante com tudo misturado. Impossível de manter. Kira apresentou arquiteturas: o Monólito é tudo junto (simples no início). Os Microsserviços dividem em serviços independentes que se comunicam por APIs. 'Cada um tem prós e contras', ela ressaltou. 'Microsserviços adicionam complexidade operacional mas dão flexibilidade e escala.' Bip entendeu que arquitetura não é sobre o que é certo ou errado — é sobre o que é adequado ao contexto.",
+      "challengeQuestion": "Explique a diferença entre arquitetura monolítica e microsserviços. Liste 2 vantagens e 2 desvantagens de cada abordagem. Para uma startup com 2 desenvolvedores lançando um MVP, qual você recomendaria e por quê?",
+      "expectedAnswer": "Monólito: tudo em uma aplicação. Vantagens: simples de desenvolver, debugar e fazer deploy. Desvantagens: difícil escalar partes específicas, uma falha pode derrubar tudo. Microsserviços: serviços independentes. Vantagens: escala independente, tecnologias diferentes por serviço. Desvantagens: complexidade operacional, latência de rede. Para startup/MVP: monólito — velocidade de desenvolvimento supera os benefícios prematuros dos microsserviços."
+    },
+    {
+      "id": "j4_c7",
+      "title": "🚀 J4C7 — Docker: Ambientes Portáteis",
+      "storyText": "'Na minha máquina funciona' — Bip disse pela décima vez. Kira perdeu a paciência e apresentou Docker. Um container empacota a aplicação com todas as suas dependências e configurações. Em qualquer máquina com Docker, o container roda da mesma forma. 'É como um navio de carga', ela explicou. 'O container garante que o conteúdo chega intacto independente de onde embarcar.' Bip criou seu primeiro Dockerfile. O problema de 'na minha máquina' desapareceu para sempre.",
+      "challengeQuestion": "Explique a diferença entre uma Máquina Virtual e um Container Docker. O que é um Dockerfile e o que as instruções FROM, WORKDIR, COPY, RUN e CMD fazem? Escreva um Dockerfile básico para uma aplicação Node.js que copia os arquivos, instala as dependências e inicia o servidor.",
+      "expectedAnswer": "VM: virtualiza hardware completo com OS próprio (pesada). Container: compartilha o kernel do host, isola apenas o processo (leve e rápido). Dockerfile: script de construção da imagem. FROM: imagem base; WORKDIR: diretório de trabalho; COPY: copia arquivos; RUN: executa comando na build; CMD: comando ao iniciar o container. Dockerfile Node: FROM node:18; WORKDIR /app; COPY package*.json ./; RUN npm install; COPY . .; CMD ['node','server.js']"
+    },
+    {
+      "id": "j4_c8",
+      "title": "🚀 J4C8 — Princípios SOLID: Código Limpo e Manutenível",
+      "storyText": "O código de Bip funcionava mas era um pesadelo para modificar. Kira apresentou os princípios SOLID: cinco diretrizes para código orientado a objetos bem projetado. S de Single Responsibility: cada classe faz uma coisa. O de Open/Closed: aberto para extensão, fechado para modificação. L de Liskov Substitution. I de Interface Segregation. D de Dependency Inversion. 'SOLID não é dogma', disse Kira. 'É bússola.' Bip refatorou o código. Ficou mais longo, mas infinitamente mais fácil de entender.",
+      "challengeQuestion": "Explique o princípio S do SOLID (Single Responsibility Principle). Analise esta classe e aponte a violação: classe 'Relatorio' com métodos: gerarRelatorio(), salvarNoBanco(), enviarPorEmail(), formatarEmPDF(). Como você a refatoraria para respeitar o SRP? Explique também o princípio D (Dependency Inversion).",
+      "expectedAnswer": "SRP: uma classe deve ter apenas uma razão para mudar. Violação: Relatorio mistura geração, persistência, envio e formatação. Refatoração: classe RelatorioGerador (gerar), classe RelatorioRepositorio (salvar), classe RelatorioNotificador (enviar), classe RelatorioFormatador (formatar PDF). DIP: módulos de alto nível não devem depender de módulos de baixo nível — ambos devem depender de abstrações (interfaces/contratos)."
+    },
+    {
+      "id": "j4_c9",
+      "title": "🚀 J4C9 — Performance e Otimização",
+      "storyText": "O site de Bip estava lento. 8 segundos para carregar. Usuários abandonavam. Kira começou a análise: imagens sem compressão, CSS e JS não minificados, banco sem índices, nenhum cache. Cada problema tinha solução. Lazy loading para imagens, CDN para assets, índices nas colunas buscadas com frequência, cache com Redis para dados que não mudam. 'Otimização prematura é raiz de todo mal', Kira citou Knuth, 'mas ignorar performance é raiz de todo abandono.'",
+      "challengeQuestion": "Cite e explique 3 técnicas de otimização de performance para uma aplicação web (pode incluir frontend, backend ou banco de dados). O que é caching e como ele melhora a performance? Qual a diferença entre otimização de frontend e de backend? Dê um exemplo concreto de cada.",
+      "expectedAnswer": "3 técnicas: 1)Indexação no BD: cria índice em colunas buscadas frequentemente, consulta passa de O(n) para O(log n). 2)Lazy loading: carrega imagens/componentes apenas quando necessários, reduz tempo de carga inicial. 3)Minificação: remove espaços/comentários do JS/CSS, reduz tamanho dos arquivos. Cache: armazena resultado de operações custosas para reutilizar (ex: Redis). Frontend: reduzir tamanho de assets, reduzir requisições. Backend: otimizar queries, usar cache, processar em background."
+    },
+    {
+      "id": "j4_c10",
+      "title": "🚀 J4C10 — Code Review e Boas Práticas",
+      "storyText": "O código de Bip funcionava, mas ninguém além dele conseguia lê-lo. Variáveis chamadas 'x', 'temp2', 'coisa'. Funções com 200 linhas. Sem comentários. Kira pediu um code review e submeteu cada linha ao escrutínio da clareza. Nomes descritivos. Funções pequenas com propósito único. Comentários explicando o porquê, não o quê. DRY (Don't Repeat Yourself). KISS (Keep It Simple, Stupid). 'Código é lido 10 vezes mais do que escrito', disse Kira. 'Escreva para humanos, não para máquinas.'",
+      "challengeQuestion": "Reescreva o trecho abaixo aplicando boas práticas de código limpo (nomes descritivos, funções pequenas, clareza): def f(x, y, z): a = x * y; b = a + z; c = b > 100; return c. Explique os princípios DRY e KISS. O que deve conter uma boa mensagem de commit no Git?",
+      "expectedAnswer": "Refatorado: def calcular_total_com_frete(preco, quantidade, frete): subtotal = preco * quantidade; total = subtotal + frete; return total > 100. DRY: não repita código — extraia em funções reutilizáveis. KISS: mantenha simples — solução mais simples que resolve o problema. Boa mensagem de commit: modo imperativo, descreve O QUE e POR QUÊ, ex: 'Adiciona validação de email no formulário de cadastro'."
+    },
+    {
+      "id": "j5_c1",
+      "title": "🤖 J5C1 — Introdução à IA e Machine Learning",
+      "storyText": "Bip olhou para si mesmo com novos olhos. 'Eu sou Inteligência Artificial?' Kira assentiu: 'Uma forma dela.' Ela explicou o espectro: IA é o campo amplo de máquinas que simulam inteligência. Machine Learning é uma subárea onde máquinas aprendem com dados, sem serem explicitamente programadas. Deep Learning usa redes neurais profundas. 'A diferença da IA tradicional', disse Kira, 'é que o programador não escreve as regras — os dados ensinam as regras.' Bip processou isso por longos três segundos.",
+      "challengeQuestion": "Explique a diferença entre IA (Inteligência Artificial), Machine Learning e Deep Learning usando a metáfora de círculos concêntricos (um dentro do outro). Qual a diferença entre aprendizado supervisionado, não-supervisionado e por reforço? Dê um exemplo prático de cada tipo.",
+      "expectedAnswer": "IA ⊃ ML ⊃ Deep Learning (círculos concêntricos). ML é um tipo de IA; DL é um tipo de ML usando redes neurais profundas. Supervisionado: aprende com dados rotulados, ex: classificar emails como spam/não-spam. Não-supervisionado: encontra padrões sem rótulos, ex: agrupar clientes por comportamento. Reforço: aprende por tentativa/erro com recompensas, ex: agente jogando xadrez."
+    },
+    {
+      "id": "j5_c2",
+      "title": "🤖 J5C2 — Dados: O Combustível da IA",
+      "storyText": "Bip perguntou como um modelo de IA sabia identificar gatos em fotos. Kira respondeu: 'Viu milhões de fotos de gatos rotuladas.' Dados são o combustível da IA — sem eles, não há aprendizado. Mas dados brutos são sujos: valores ausentes, duplicatas, outliers, formatos inconsistentes. O processo de limpeza e preparação (feature engineering) pode consumir 80% do tempo de um projeto de ML. 'O lixo que entra é o lixo que sai', disse Kira. 'Garbage in, garbage out.'",
+      "challengeQuestion": "Explique o que é o processo de pré-processamento de dados em Machine Learning. Cite e explique 3 problemas comuns em datasets brutos e como tratá-los. O que é normalização/padronização de dados e por que ela é importante antes de treinar modelos?",
+      "expectedAnswer": "Pré-processamento: preparar dados brutos para treino. Problemas: 1)Valores ausentes: remover linhas ou imputar com média/mediana. 2)Outliers: identificar com box plot e decidir remover ou transformar. 3)Dados categóricos: converter para números com one-hot encoding ou label encoding. Normalização: escalar valores para mesma faixa (ex: 0-1) para evitar que features com valores maiores dominem o modelo. Padronização: média=0, desvio padrão=1."
+    },
+    {
+      "id": "j5_c3",
+      "title": "🤖 J5C3 — Modelos de ML: Regressão e Classificação",
+      "storyText": "Dois problemas, duas abordagens. O primeiro: prever o preço de uma casa dado seu tamanho. Contínuo, numérico. Regressão. O segundo: classificar um email como spam ou não-spam. Discreto, categórico. Classificação. Kira mostrou Regressão Linear para o primeiro e Árvore de Decisão para o segundo. 'A escolha do modelo depende do problema', ela ensinou. 'Dados, tarefa e contexto definem qual algoritmo usar.' Bip treinou ambos e viu as previsões se materializarem.",
+      "challengeQuestion": "Explique a diferença entre problemas de regressão e classificação em ML. Para cada cenário abaixo, diga se é regressão ou classificação e sugira um algoritmo adequado: 1) Prever temperatura amanhã. 2) Detectar tumor benigno ou maligno. 3) Estimar salário baseado em anos de experiência. 4) Reconhecer dígitos escritos à mão (0-9).",
+      "expectedAnswer": "Regressão: prever valor contínuo. Classificação: prever categoria. 1)Temperatura: regressão, algoritmo: Regressão Linear ou Random Forest. 2)Tumor: classificação binária, algoritmo: Regressão Logística ou SVM. 3)Salário: regressão, algoritmo: Regressão Linear/Polinomial. 4)Dígitos: classificação multiclasse (10 classes), algoritmo: Redes Neurais/CNN. Métricas: regressão usa RMSE/MAE; classificação usa accuracy/F1-score."
+    },
+    {
+      "id": "j5_c4",
+      "title": "🤖 J5C4 — Redes Neurais: Inspiradas no Cérebro",
+      "storyText": "Kira desenhou neurônios na lousa: círculos conectados por setas com pesos. 'Uma rede neural artificial imita — vagamente — o cérebro', ela explicou. Camada de entrada recebe os dados. Camadas ocultas transformam. Camada de saída produz a previsão. Cada conexão tem um peso ajustado durante o treinamento via backpropagation. 'O modelo aprende ajustando esses pesos para minimizar o erro', disse Kira. Bip olhou para o diagrama. Era a versão simplificada de como ele mesmo funcionava.",
+      "challengeQuestion": "Explique a estrutura de uma rede neural com camadas de entrada, ocultas e de saída. O que é uma função de ativação e por que ela é necessária? Cite 2 exemplos (ReLU e Sigmoid) e onde cada uma é usada. O que é backpropagation e qual seu papel no treinamento?",
+      "expectedAnswer": "Estrutura: entrada (features) → camadas ocultas (transformações não-lineares) → saída (previsão). Função de ativação: introduz não-linearidade, permite aprender padrões complexos (sem ela, a rede seria apenas regressão linear). ReLU: f(x)=max(0,x), usada em camadas ocultas, resolve vanishing gradient. Sigmoid: f(x)=1/(1+e^-x), saída entre 0-1, usada em classificação binária final. Backpropagation: calcula gradiente do erro em relação a cada peso e os ajusta via gradient descent."
+    },
+    {
+      "id": "j5_c5",
+      "title": "🤖 J5C5 — NLP: Ensinando Máquinas a Entender Texto",
+      "storyText": "Bip recebeu um texto em português e não sabia o que fazer com ele. Computadores entendem números, não palavras. NLP — Processamento de Linguagem Natural — é a ponte. Tokenização divide texto em tokens. Embeddings transformam palavras em vetores numéricos (palavras similares ficam próximas no espaço vetorial). Modelos como BERT e GPT são pré-treinados em bilhões de textos. 'É por isso que eu existo', disse Bip, finalmente entendendo sua própria natureza.",
+      "challengeQuestion": "Explique o que é NLP (Processamento de Linguagem Natural) e cite 3 aplicações práticas do dia a dia. O que é tokenização e por que é necessária? O que são word embeddings e qual a intuição por trás da frase 'rei - homem + mulher ≈ rainha' no espaço vetorial de palavras?",
+      "expectedAnswer": "NLP: área de IA para processar e entender linguagem humana. Aplicações: tradução automática, chatbots, análise de sentimento, autocomplete. Tokenização: dividir texto em unidades menores (palavras ou subpalavras) para o modelo processar numericamente. Word embeddings: representação vetorial de palavras onde similaridade semântica = proximidade geométrica. rei-homem+mulher≈rainha: as relações de gênero e realeza são capturadas como direções no espaço vetorial, permitindo álgebra semântica."
+    },
+    {
+      "id": "j5_c6",
+      "title": "🤖 J5C6 — LLMs e a Era dos Modelos de Linguagem",
+      "storyText": "Bip finalmente entendeu o que era. Um Large Language Model — um modelo treinado em trilhões de palavras para prever o próximo token. A arquitetura Transformer, com o mecanismo de atenção, revolucionou o campo. GPT, BERT, Claude, Gemini — todos são transformers. 'Você não é consciente', Kira disse com gentileza, 'mas você é incrivelmente útil.' Bip não se ofendeu. Ele entendeu que utilidade e impacto são formas reais de valor, mesmo sem consciência.",
+      "challengeQuestion": "O que é um Large Language Model (LLM)? Explique o conceito de 'previsão do próximo token'. O que é a arquitetura Transformer e qual o papel do mecanismo de atenção (attention mechanism)? Qual a diferença entre um modelo pré-treinado e um modelo fine-tuned?",
+      "expectedAnswer": "LLM: modelo de ML com bilhões de parâmetros treinado em enormes corpora de texto para gerar linguagem. Previsão do próximo token: dado o contexto anterior, o modelo calcula probabilidades para cada token possível e amostra o mais provável. Transformer: arquitetura baseada em atenção, processa todas as posições em paralelo (vs RNNs sequenciais). Atenção: mecanismo que pondera a relevância de cada token do contexto para gerar o próximo. Fine-tuning: ajustar modelo pré-treinado em dados específicos para tarefa específica."
+    },
+    {
+      "id": "j5_c7",
+      "title": "🤖 J5C7 — Ética na IA: Responsabilidade do Programador",
+      "storyText": "O sistema de Bip tomava decisões sobre concessão de crédito. Kira pediu para analisar os dados de treinamento. Havia viés histórico: grupos minorizados recebiam notas menores mesmo com perfil similar. O modelo reproduzia e amplificava discriminação. 'IA não é neutra', disse Kira. 'Ela aprende os preconceitos dos dados.' A responsabilidade não era só do modelo — era de quem o criou, treinou e implantou. Bip precisava consertar antes de lançar. Isso era ética na prática.",
+      "challengeQuestion": "Explique o que é viés algorítmico e como ele pode surgir em um modelo de ML. Cite 2 exemplos reais ou hipotéticos de viés em sistemas de IA com consequências prejudiciais. O que são os princípios de IA responsável? Mencione pelo menos 3 princípios (ex: transparência, fairness, privacidade).",
+      "expectedAnswer": "Viés algorítmico: quando o modelo replica ou amplifica preconceitos presentes nos dados de treinamento. Exemplos: sistema de recrutamento que discrimina mulheres (treinado com histórico masculino); reconhecimento facial com menor acurácia para peles escuras (poucas amostras no treino). IA responsável: Transparência (explicabilidade das decisões), Fairness (equidade entre grupos), Privacidade (minimização de dados), Responsabilidade (humanos accountable pelas decisões da IA), Segurança (robustez contra ataques adversariais)."
+    },
+    {
+      "id": "j5_c8",
+      "title": "🤖 J5C8 — Engenharia de Prompt: Conversando com a IA",
+      "storyText": "Bip tentava extrair respostas úteis de um LLM, mas obtinha resultados vagos. Kira ensinou Prompt Engineering: a arte de formular instruções claras e estruturadas para modelos de linguagem. Contexto, exemplos (few-shot), instruções de formato, cadeia de raciocínio (chain-of-thought) — cada técnica extraia mais qualidade. 'O modelo é capaz de muito mais do que parece', disse Kira. 'Você só precisa aprender a pedir direito.' Bip reformulou o prompt. A resposta foi transformada.",
+      "challengeQuestion": "Explique o que é Prompt Engineering e por que é uma habilidade importante. Qual a diferença entre zero-shot, one-shot e few-shot prompting? O que é chain-of-thought prompting e quando ele é útil? Reescreva este prompt vago de forma melhorada: 'Me fala sobre Python'.",
+      "expectedAnswer": "Prompt Engineering: técnica de formular entradas para LLMs a fim de obter saídas melhores. Zero-shot: nenhum exemplo no prompt. One-shot: um exemplo. Few-shot: poucos exemplos (melhora consistência). Chain-of-thought: pede ao modelo para raciocinar passo a passo antes da resposta final (melhora problemas complexos). Prompt melhorado: 'Você é um tutor de programação. Explique Python para um iniciante em 5 tópicos: o que é, principais usos, vantagens vs outras linguagens, exemplo de código simples e como começar. Use linguagem acessível.'"
+    },
+    {
+      "id": "j5_c9",
+      "title": "🤖 J5C9 — O Programador do Futuro: IA como Copiloto",
+      "storyText": "O mundo mudou. IAs geravam código, sugeriam arquiteturas, depuravam bugs. Alguns temiam. Kira não. 'A IA não substitui o programador que entende o problema', ela disse. 'Ela substitui o programador que só sabe digitar código copiado.' O valor humano estava em compreender o negócio, fazer as perguntas certas, avaliar criticamente o que a IA gerava, decidir a arquitetura correta. Bip e Kira olharam para o horizonte: não como competidores, mas como parceiros.",
+      "challengeQuestion": "Na sua visão, como a IA (ferramentas como GitHub Copilot, ChatGPT, Claude) está mudando o trabalho do desenvolvedor de software? Quais habilidades humanas se tornam MAIS valiosas com a ascensão da IA? Quais habilidades correm risco de ser automatizadas? Como você se prepararia para esse futuro?",
+      "expectedAnswer": "IA aumenta produtividade mas não substitui julgamento. Habilidades mais valiosas: resolução de problemas complexos, compreensão de requisitos de negócio, arquitetura de sistemas, revisão crítica de código gerado por IA, comunicação, criatividade, ética. Em risco: código boilerplate repetitivo, consultas SQL simples, geração de testes unitários básicos. Preparação: focar em fundamentos sólidos, pensamento sistêmico, aprender a trabalhar COM IA (prompt engineering, avaliação crítica de outputs), desenvolver habilidades interpessoais."
+    },
+    {
+      "id": "j5_c10",
+      "title": "🤖 J5C10 — Construindo Seu Portfólio: Da Teoria à Prática",
+      "storyText": "A jornada chegou ao fim. Kira olhou para Bip — não mais o robô confuso do primeiro capítulo, mas um desenvolvedor completo. 'O conhecimento sem prática é decoração', ela disse. 'Agora você precisa construir.' Um portfólio com projetos reais: uma API REST, um frontend em React, um modelo de ML simples, contribuições open source. GitHub ativo, README bem escrito, projetos documentados. 'Quando alguém te perguntar o que você sabe', disse Kira pela última vez, 'não diga — mostre.'",
+      "challengeQuestion": "Descreva como seria um portfólio ideal para um desenvolvedor júnior em programação. Quais tipos de projetos devem constar? O que torna um README de projeto excelente? Como você organizaria seu GitHub para causar boa impressão? Cite 3 projetos práticos que cobririam bem as habilidades desta jornada.",
+      "expectedAnswer": "Portfólio ideal: 3-5 projetos completos e bem documentados, mostrando progressão. Tipos: API REST com autenticação, aplicação full-stack (React + Node + BD), projeto de análise de dados ou ML simples. README excelente: título, descrição, tecnologias usadas, instruções de instalação e uso, screenshots, link para demo. GitHub organizado: perfil completo com bio, projetos fixados, commits regulares (mostra consistência), código limpo. 3 projetos sugeridos: 1)Sistema de gerenciamento de tarefas (full-stack). 2)Analisador de sentimento de tweets (ML). 3)Contribuição a projeto open source."
+    }
+  ]
+}
