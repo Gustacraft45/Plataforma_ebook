@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from './api'
 
@@ -11,9 +11,10 @@ export default function BookReading() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [completed, setCompleted] = useState(false)
-  const [xp, setXp] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user'))?.xp || 0 } catch { return 0 }
-  })
+  const [sceneKey, setSceneKey] = useState(0)
+  const [xp, setXp] = useState(() => { try { return JSON.parse(localStorage.getItem('user'))?.xp||0 } catch { return 0 } })
+  const [xpFlash, setXpFlash] = useState(null)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     api.books.get(id).then(({ ok, data }) => {
@@ -27,67 +28,76 @@ export default function BookReading() {
     if (!answer.trim()) return
     setLoading(true); setResult(null)
     const scene = book.nodes[nodeIndex]
-    const { ok, data } = await api.evaluate(scene.challengeQuestion, answer, scene.expectedAnswer || '')
+    const { ok, data } = await api.evaluate(scene.challengeQuestion, answer, scene.expectedAnswer||'')
     if (ok) {
       setResult(data)
       const isCorrect = ['correto','correct'].includes(data.status?.toLowerCase())
       const isPartial = ['parcial','partial'].includes(data.status?.toLowerCase())
-      if (isCorrect || isPartial) {
-        const res = await api.user.progress({ bookId: id, nodeId: scene.id, currentNode: scene.id, isCorrect, status: data.status })
+      if (isCorrect||isPartial) {
+        const gain = isCorrect ? 100 : 50
+        const res = await api.user.progress({ bookId:id, nodeId:scene.id, currentNode:scene.id, isCorrect, status:data.status })
         if (res.ok) {
           setXp(res.data.xpTotal)
-          const u = JSON.parse(localStorage.getItem('user') || '{}')
-          localStorage.setItem('user', JSON.stringify({ ...u, xp: res.data.xpTotal }))
+          setXpFlash(`+${gain} XP`)
+          setTimeout(()=>setXpFlash(null), 2000)
+          const u = JSON.parse(localStorage.getItem('user')||'{}')
+          localStorage.setItem('user', JSON.stringify({...u, xp:res.data.xpTotal}))
         }
       }
     } else {
-      setResult({ status: 'errado', feedback: 'Não foi possível conectar à IA. Tente novamente.' })
+      setResult({ status:'errado', feedback:'Não foi possível conectar à IA. Tente novamente.' })
     }
     setLoading(false)
   }
 
   const goNext = () => {
-    if (nodeIndex < book.nodes.length - 1) {
-      setNodeIndex(i => i + 1); setAnswer(''); setResult(null)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    } else {
-      setCompleted(true)
-    }
+    if (nodeIndex < book.nodes.length-1) {
+      setNodeIndex(i=>i+1); setAnswer(''); setResult(null)
+      setSceneKey(k=>k+1)
+      window.scrollTo({top:0, behavior:'smooth'})
+      setTimeout(()=>textareaRef.current?.focus(), 600)
+    } else { setCompleted(true) }
   }
 
   if (!book) return (
-    <div style={{ minHeight:'100dvh', background:'#09090b', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Outfit',sans-serif", color:'#27272a', fontSize:14 }}>
-      Carregando...
+    <div style={{minHeight:'100dvh',background:'#0e0c0a',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div style={{display:'flex',gap:6}}>
+        {[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:'50%',background:'#2a2520',animation:`ldot .9s ${i*.15}s infinite`}}/>)}
+      </div>
     </div>
   )
 
   if (completed) return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0;}
-        @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-        .cp-root{min-height:100dvh;background:#09090b;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;}
-        .cp-card{border:1px solid #1c1c1e;border-radius:20px;padding:56px 48px;text-align:center;max-width:420px;animation:scaleIn .4s ease;background:#111113;}
-        .cp-icon{width:56px;height:56px;border:1px solid #27272a;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
-        .cp-title{font-size:22px;font-weight:600;color:#fafafa;letter-spacing:-.02em;margin-bottom:8px;}
-        .cp-sub{font-size:14px;color:#52525b;line-height:1.7;margin-bottom:28px;}
-        .cp-xp{font-family:'Geist Mono',monospace;font-size:28px;font-weight:500;color:#fafafa;letter-spacing:-.02em;margin-bottom:28px;}
-        .cp-xp span{font-size:13px;color:#3f3f46;margin-left:4px;font-family:'Outfit',sans-serif;}
-        .cp-btn{display:block;width:100%;padding:13px;background:#fafafa;color:#09090b;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity .18s;}
-        .cp-btn:hover{opacity:.88;}
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Outfit:wght@400;500;600&family=Geist+Mono:wght@500&display=swap');
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+        @keyframes ldot{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
+        .cp{min-height:100dvh;background:#0e0c0a;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;position:relative;overflow:hidden;}
+        .cp-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 60%,rgba(196,148,74,.06) 0%,transparent 70%);pointer-events:none;}
+        .cp-card{position:relative;text-align:center;max-width:420px;padding:0 28px;animation:scaleIn .5s cubic-bezier(.34,1.56,.64,1);}
+        .cp-seal{width:80px;height:80px;border-radius:50%;border:1px solid #2a2520;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:34px;background:#12100e;position:relative;}
+        .cp-seal::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid #c4944a;opacity:.25;animation:pulse-r 2.5s infinite;}
+        @keyframes pulse-r{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.06);opacity:.08}}
+        .cp-pre{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#5a5248;margin-bottom:12px;font-weight:500;}
+        .cp-title{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#f5ede0;letter-spacing:-.01em;margin-bottom:12px;line-height:1.2;}
+        .cp-sub{font-size:14px;color:#5a5248;line-height:1.8;margin-bottom:36px;}
+        .cp-xp{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:#f5ede0;line-height:1;margin-bottom:4px;}
+        .cp-xp-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#3a3028;margin-bottom:36px;}
+        .cp-btn{width:100%;padding:14px;background:#c4944a;color:#0e0c0a;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity .2s,transform .15s;letter-spacing:-.01em;}
+        .cp-btn:hover{opacity:.88;transform:translateY(-1px);}
       `}</style>
-      <div className="cp-root">
+      <div className="cp">
+        <div className="cp-bg"/>
         <div className="cp-card">
-          <div className="cp-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M5 12l5 5L19 7" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <div className="cp-title">Jornada concluída.</div>
-          <div className="cp-sub">Você completou <strong style={{ color:'#a1a1aa' }}>{book.title}</strong> e dominou todos os desafios.</div>
-          <div className="cp-xp">{xp}<span>XP acumulados</span></div>
-          <button className="cp-btn" onClick={() => navigate('/dashboard')}>Voltar à biblioteca</button>
+          <div className="cp-seal">🏆</div>
+          <div className="cp-pre">Jornada concluída</div>
+          <div className="cp-title">{book.title}</div>
+          <div className="cp-sub">Você dominou todos os desafios de <em style={{color:'#9a9188'}}>{book.characterName}</em> e completou este capítulo do seu aprendizado.</div>
+          <div className="cp-xp">{xp}</div>
+          <div className="cp-xp-lbl">XP total acumulado</div>
+          <button className="cp-btn" onClick={()=>navigate('/dashboard')}>Voltar à biblioteca</button>
         </div>
       </div>
     </>
@@ -95,197 +105,224 @@ export default function BookReading() {
 
   const scene = book.nodes[nodeIndex]
   const total = book.nodes.length
-  const progress = Math.round(((nodeIndex + 1) / total) * 100)
+  const progress = Math.round(((nodeIndex+1)/total)*100)
   const status = result?.status?.toLowerCase()
   const isCorrect = ['correto','correct'].includes(status)
   const isPartial = ['parcial','partial'].includes(status)
   const isWrong = result && !isCorrect && !isPartial
 
-  // mapa janela deslizante
-  const win = 3
-  const start = Math.max(0, nodeIndex - win)
-  const end = Math.min(total - 1, nodeIndex + win)
-
-  const resultCfg = isCorrect
-    ? { border:'#10b981', bg:'rgba(16,185,129,.04)', label:'Correto', color:'#10b981', xpLabel:'+100 XP' }
-    : isPartial
-    ? { border:'#f59e0b', bg:'rgba(245,158,11,.04)', label:'Parcial', color:'#f59e0b', xpLabel:'+50 XP' }
-    : { border:'#27272a', bg:'transparent', label:'Incorreto', color:'#52525b', xpLabel:'' }
+  const win=3, start=Math.max(0,nodeIndex-win), end=Math.min(total-1,nodeIndex+win)
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap');
-        @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-        .r-root { min-height:100dvh; background:#09090b; font-family:'Outfit',sans-serif; color:#a1a1aa; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        @keyframes ldot{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        @keyframes xpPop{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1;transform:translateY(-8px) scale(1)}80%{opacity:1;transform:translateY(-16px)}100%{opacity:0;transform:translateY(-28px)}}
+        @keyframes resultIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+        @keyframes charIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+
+        .r-root{min-height:100dvh;background:#0e0c0a;font-family:'Outfit',sans-serif;color:#9a9188;}
 
         /* TOPBAR */
-        .r-top { display:flex; align-items:center; gap:16px; padding:0 40px; height:52px; border-bottom:1px solid #1c1c1e; position:sticky; top:0; background:rgba(9,9,11,.92); backdrop-filter:blur(16px); z-index:20; }
-        .r-back { display:flex; align-items:center; gap:6px; background:none; border:none; color:#52525b; font-size:12px; cursor:pointer; font-family:'Outfit',sans-serif; padding:0; transition:color .18s; white-space:nowrap; }
-        .r-back:hover { color:#a1a1aa; }
-        .r-progress-wrap { flex:1; }
-        .r-prog-labels { display:flex; justify-content:space-between; margin-bottom:5px; }
-        .r-prog-title { font-size:12px; color:#fafafa; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:340px; }
-        .r-prog-info { font-size:11px; color:'#3f3f46'; font-family:'Geist Mono',monospace; }
-        .r-prog-track { height:2px; background:#1c1c1e; border-radius:1px; }
-        .r-prog-fill { height:100%; background:#3b82f6; border-radius:1px; transition:width .5s; }
-        .r-xp { font-family:'Geist Mono',monospace; font-size:12px; color:#52525b; white-space:nowrap; border:1px solid #1c1c1e; padding:5px 12px; border-radius:20px; }
+        .r-top{display:flex;align-items:center;gap:16px;padding:0 48px;height:56px;border-bottom:1px solid #1e1a16;position:sticky;top:0;background:rgba(14,12,10,.96);backdrop-filter:blur(20px);z-index:20;}
+        .r-back{display:flex;align-items:center;gap:6px;background:none;border:none;color:#3a3028;font-size:12px;cursor:pointer;font-family:'Outfit',sans-serif;padding:0;transition:color .2s;white-space:nowrap;}
+        .r-back:hover{color:#9a9188;}
+        .r-prog-wrap{flex:1;}
+        .r-prog-head{display:flex;justify-content:space-between;margin-bottom:6px;}
+        .r-prog-title{font-size:12px;color:#f5ede0;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;font-family:'Playfair Display',serif;}
+        .r-prog-info{font-family:'Geist Mono',monospace;font-size:11px;color:#3a3028;}
+        .r-prog-track{height:1.5px;background:#1e1a16;border-radius:1px;overflow:hidden;}
+        .r-prog-fill{height:100%;background:linear-gradient(90deg,#8b5e2a,#c4944a);border-radius:1px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+        .r-xp-wrap{position:relative;}
+        .r-xp{font-family:'Geist Mono',monospace;font-size:12px;color:#5a5248;border:1px solid #2a2520;padding:5px 12px;border-radius:20px;transition:all .3s;}
+        .r-xp.flash{color:#c4944a;border-color:#c4944a40;}
+        .r-xp-pop{position:absolute;top:-2px;right:0;font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;color:#c4944a;animation:xpPop 2s forwards;pointer-events:none;white-space:nowrap;}
 
         /* BODY */
-        .r-body { max-width:680px; margin:0 auto; padding:52px 40px 100px; }
+        .r-body{max-width:700px;margin:0 auto;padding:52px 48px 120px;}
 
         /* MAP */
-        .r-map { display:flex; align-items:center; gap:6px; margin-bottom:44px; }
-        .r-mdot { width:22px; height:22px; border-radius:50%; border:1px solid #1c1c1e; display:flex; align-items:center; justify-content:center; font-family:'Geist Mono',monospace; font-size:9px; color:#27272a; flex-shrink:0; transition:all .25s; }
-        .r-mdot.done { background:#1c1c1e; border-color:#27272a; color:#52525b; }
-        .r-mdot.current { background:#3b82f6; border-color:#3b82f6; color:#fff; }
-        .r-mline { flex:1; height:1px; background:#1c1c1e; transition:background .25s; max-width:28px; }
-        .r-mline.done { background:#27272a; }
-        .r-mellipsis { font-size:10px; color:'#27272a'; padding:0 2px; font-family:'Geist Mono',monospace; color:#27272a; }
+        .r-map{display:flex;align-items:center;gap:5px;margin-bottom:52px;animation:fadeIn .5s ease;}
+        .r-mdot{width:24px;height:24px;border-radius:50%;border:1px solid #2a2520;display:flex;align-items:center;justify-content:center;font-family:'Geist Mono',monospace;font-size:9px;color:#2a2520;flex-shrink:0;transition:all .35s cubic-bezier(.4,0,.2,1);}
+        .r-mdot.done{background:#1a1714;border-color:#2a2520;color:#3a3028;}
+        .r-mdot.current{background:#c4944a;border-color:#c4944a;color:#0e0c0a;box-shadow:0 0 0 4px rgba(196,148,74,.15);}
+        .r-mline{flex:1;height:1px;background:#1e1a16;transition:background .35s;max-width:24px;}
+        .r-mline.done{background:#2a2520;}
+        .r-mellipsis{font-family:'Geist Mono',monospace;font-size:10px;color:#2a2520;padding:0 3px;}
 
         /* SCENE */
-        .r-meta { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#3f3f46; margin-bottom:8px; }
-        .r-title { font-size:clamp(22px,3vw,28px); font-weight:600; color:#fafafa; letter-spacing:-.02em; line-height:1.2; margin-bottom:36px; animation:fadeUp .3s ease; }
+        .r-scene{animation:slideUp .45s cubic-bezier(.4,0,.2,1);}
+        .r-chapter-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#5a5248;margin-bottom:10px;font-weight:500;}
+        .r-chapter-dot{width:4px;height:4px;border-radius:50%;background:#c4944a;}
+        .r-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,34px);font-weight:700;color:#f5ede0;letter-spacing:-.01em;line-height:1.2;margin-bottom:40px;}
 
-        /* CHARACTER */
-        .r-char { display:flex; gap:14px; align-items:flex-start; margin-bottom:36px; animation:fadeUp .3s .05s ease both; }
-        .r-char-avatar { width:40px; height:40px; border-radius:50%; border:1px solid #27272a; background:#111113; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .r-char-bubble { flex:1; background:#111113; border:1px solid #1c1c1e; border-radius:0 12px 12px 12px; padding:18px 20px; }
-        .r-char-name { font-size:10px; font-weight:600; color:#3f3f46; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
-        .r-char-text { font-size:14px; line-height:1.85; color:#71717a; }
+        /* PERSONAGEM */
+        .r-char{display:flex;gap:16px;align-items:flex-start;margin-bottom:40px;animation:charIn .5s .1s cubic-bezier(.4,0,.2,1) both;}
+        .r-char-avatar{width:46px;height:46px;border-radius:50%;border:1px solid #2a2520;background:#12100e;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;position:relative;}
+        .r-char-avatar::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid #c4944a;opacity:.2;}
+        .r-char-bubble{flex:1;background:#12100e;border:1px solid #2a2520;border-radius:0 16px 16px 16px;padding:20px 22px;position:relative;}
+        .r-char-bubble::before{content:'';position:absolute;left:-7px;top:16px;width:6px;height:6px;background:#12100e;border-left:1px solid #2a2520;border-bottom:1px solid #2a2520;transform:rotate(45deg);}
+        .r-char-name{font-size:10px;font-weight:600;color:#5a5248;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+        .r-char-text{font-size:15px;line-height:1.9;color:#6a6258;font-style:italic;}
 
-        .r-divider { height:1px; background:#1c1c1e; margin:32px 0; }
+        /* DIVISOR */
+        .r-divider{height:1px;background:linear-gradient(90deg,transparent,#2a2520 30%,#2a2520 70%,transparent);margin:36px 0;}
 
-        /* CHALLENGE */
-        .r-challenge { border:1px solid #1c1c1e; border-radius:12px; padding:20px; margin-bottom:20px; animation:fadeUp .3s .1s ease both; }
-        .r-challenge-top { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:#3f3f46; margin-bottom:10px; }
-        .r-challenge-q { font-size:15px; color:#e4e4e7; line-height:1.65; }
+        /* DESAFIO */
+        .r-challenge{border:1px solid #2a2520;border-radius:14px;padding:24px;margin-bottom:22px;animation:fadeUp .4s .15s cubic-bezier(.4,0,.2,1) both;position:relative;overflow:hidden;background:#12100e;}
+        .r-challenge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#c4944a,transparent);opacity:.5;}
+        .r-challenge-label{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#5a5248;margin-bottom:14px;}
+        .r-challenge-pulse{width:5px;height:5px;border-radius:50%;background:#c4944a;animation:ldot 2s infinite;}
+        .r-challenge-q{font-size:15px;color:#e8ddd0;line-height:1.75;}
 
         /* FORM */
-        .r-form { display:flex; flex-direction:column; gap:10px; animation:fadeUp .3s .15s ease both; }
-        .r-textarea { width:100%; padding:14px; background:#111113; border:1px solid #1c1c1e; border-radius:10px; font-size:14px; color:#fafafa; font-family:'Outfit',sans-serif; resize:vertical; min-height:100px; outline:none; transition:border-color .18s; line-height:1.65; }
-        .r-textarea:focus { border-color:#27272a; }
-        .r-textarea::placeholder { color:#27272a; }
-        .r-submit { padding:12px; background:#fafafa; color:#09090b; border:none; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Outfit',sans-serif; transition:opacity .18s, transform .1s; }
-        .r-submit:hover:not(:disabled) { opacity:.88; transform:translateY(-1px); }
-        .r-submit:active:not(:disabled) { transform:scale(.98); }
-        .r-submit:disabled { opacity:.3; cursor:not-allowed; }
+        .r-form{display:flex;flex-direction:column;gap:10px;animation:fadeUp .4s .2s cubic-bezier(.4,0,.2,1) both;}
+        .r-textarea{width:100%;padding:16px;background:#12100e;border:1px solid #2a2520;border-radius:12px;font-size:14px;color:#f5ede0;font-family:'Outfit',sans-serif;resize:vertical;min-height:110px;outline:none;transition:border-color .2s,background .2s;line-height:1.75;}
+        .r-textarea:focus{border-color:#3a3028;background:#141210;}
+        .r-textarea::placeholder{color:#2a2520;}
+        .r-submit{padding:14px;background:#c4944a;color:#0e0c0a;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity .2s,transform .15s;letter-spacing:-.01em;}
+        .r-submit:hover:not(:disabled){opacity:.88;transform:translateY(-1px);}
+        .r-submit:active:not(:disabled){transform:scale(.98) translateY(0);}
+        .r-submit:disabled{opacity:.2;cursor:not-allowed;}
+        .r-hint{text-align:center;font-size:11px;color:#2a2520;}
+        .r-loading-bar{height:2px;border-radius:1px;background:linear-gradient(90deg,transparent,#c4944a,transparent);background-size:200% 100%;animation:shimmer 1.2s infinite;}
 
-        /* RESULT */
-        .r-result { margin-top:16px; padding:20px; border-radius:12px; border-width:1px; border-style:solid; animation:fadeUp .25s ease; }
-        .r-result-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-        .r-result-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
-        .r-result-xp { font-family:'Geist Mono',monospace; font-size:11px; }
-        .r-result-text { font-size:14px; line-height:1.7; color:#71717a; }
-        .r-result-div { height:1px; background:#1c1c1e; margin:14px 0; }
-        .r-result-sub { font-size:13px; color:#52525b; line-height:1.6; }
-        .r-action { margin-top:14px; width:100%; padding:11px; border-radius:10px; border:1px solid #1c1c1e; background:transparent; font-size:13px; font-weight:500; cursor:pointer; font-family:'Outfit',sans-serif; color:#a1a1aa; transition:all .18s; }
-        .r-action:hover { background:#1c1c1e; color:#fafafa; }
+        /* RESULTADO */
+        .r-result{margin-top:16px;padding:22px 24px;border-radius:14px;border-width:1px;border-style:solid;animation:resultIn .35s cubic-bezier(.4,0,.2,1);}
+        .r-result-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+        .r-result-badge{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+        .r-result-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+        .r-result-xp{font-family:'Geist Mono',monospace;font-size:12px;font-weight:600;}
+        .r-result-text{font-size:14px;line-height:1.8;color:#6a6258;}
+        .r-result-div{height:1px;background:#1e1a16;margin:16px 0;}
+        .r-result-sub{font-size:13px;color:#5a5248;margin-bottom:14px;line-height:1.6;}
+        .r-action{width:100%;padding:12px;border-radius:10px;border:1px solid #2a2520;background:transparent;font-size:13px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;color:#9a9188;transition:all .2s;}
+        .r-action:hover{background:#1a1714;color:#f5ede0;border-color:#3a3028;}
 
         @media(max-width:767px){
-          .r-top{padding:0 20px;}
-          .r-body{padding:32px 20px 80px;}
+          .r-top,.r-body{padding-left:20px;padding-right:20px;}
+          .r-body{padding-top:36px;}
         }
       `}</style>
 
       <div className="r-root">
         <div className="r-top">
-          <button className="r-back" onClick={() => navigate('/dashboard')}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          <button className="r-back" onClick={()=>navigate('/dashboard')}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
             Biblioteca
           </button>
-          <div className="r-progress-wrap">
-            <div className="r-prog-labels">
+          <div className="r-prog-wrap">
+            <div className="r-prog-head">
               <span className="r-prog-title">{book.title}</span>
-              <span className="r-prog-info" style={{ fontFamily:"'Geist Mono',monospace", fontSize:11, color:'#3f3f46' }}>{nodeIndex+1}/{total}</span>
+              <span className="r-prog-info">{nodeIndex+1} / {total}</span>
             </div>
-            <div className="r-prog-track"><div className="r-prog-fill" style={{ width:`${progress}%` }} /></div>
+            <div className="r-prog-track"><div className="r-prog-fill" style={{width:`${progress}%`}}/></div>
           </div>
-          <div className="r-xp">{xp} XP</div>
+          <div className="r-xp-wrap">
+            <div className={`r-xp ${xpFlash?'flash':''}`}>{xp} XP</div>
+            {xpFlash && <div className="r-xp-pop">{xpFlash}</div>}
+          </div>
         </div>
 
         <div className="r-body">
           {/* Mapa */}
           <div className="r-map">
-            {start > 0 && <span className="r-mellipsis">1…{start}</span>}
-            {Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i, arrIdx) => (
-              <div key={i} style={{ display:'flex', alignItems:'center', gap:6 }}>
-                <div className={`r-mdot ${i < nodeIndex ? 'done' : i === nodeIndex ? 'current' : ''}`}>{i+1}</div>
-                {i < end && <div className={`r-mline ${i < nodeIndex ? 'done' : ''}`} />}
+            {start>0 && <span className="r-mellipsis">1…{start}</span>}
+            {Array.from({length:end-start+1},(_,i)=>start+i).map(i=>(
+              <div key={i} style={{display:'flex',alignItems:'center',gap:5}}>
+                <div className={`r-mdot ${i<nodeIndex?'done':i===nodeIndex?'current':''}`}>{i+1}</div>
+                {i<end && <div className={`r-mline ${i<nodeIndex?'done':''}`}/>}
               </div>
             ))}
-            {end < total - 1 && <span className="r-mellipsis">{end+2}…{total}</span>}
-            <span style={{ marginLeft:'auto', fontFamily:"'Geist Mono',monospace", fontSize:11, color:'#27272a', whiteSpace:'nowrap' }}>{progress}%</span>
+            {end<total-1 && <span className="r-mellipsis">{end+2}…{total}</span>}
+            <span style={{marginLeft:'auto',fontFamily:"'Geist Mono',monospace",fontSize:11,color:'#2a2520'}}>{progress}%</span>
           </div>
 
-          <div className="r-meta">{book.subject}</div>
-          <h1 className="r-title">{scene.title}</h1>
-
-          <div className="r-char">
-            <div className="r-char-avatar">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <circle cx="9" cy="6" r="3" stroke="#3f3f46" strokeWidth="1.2"/>
-                <path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="#3f3f46" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
+          {/* Cena */}
+          <div className="r-scene" key={sceneKey}>
+            <div className="r-chapter-tag">
+              <div className="r-chapter-dot"/>
+              {book.subject} · Cena {nodeIndex+1}
             </div>
-            <div className="r-char-bubble">
-              <div className="r-char-name">{book.characterName}</div>
-              <div className="r-char-text">{scene.storyText}</div>
-            </div>
-          </div>
+            <h1 className="r-title">{scene.title}</h1>
 
-          <div className="r-divider" />
-
-          <div className="r-challenge">
-            <div className="r-challenge-top">Desafio</div>
-            <div className="r-challenge-q">{scene.challengeQuestion}</div>
-          </div>
-
-          {!result ? (
-            <form className="r-form" onSubmit={handleEvaluate}>
-              <textarea
-                className="r-textarea"
-                placeholder="Escreva sua resposta..."
-                value={answer}
-                onChange={e => setAnswer(e.target.value)}
-                required
-              />
-              <button className="r-submit" type="submit" disabled={loading}>
-                {loading ? 'Avaliando...' : 'Enviar resposta'}
-              </button>
-            </form>
-          ) : (
-            <div className="r-result" style={{ borderColor: resultCfg.border, background: resultCfg.bg }}>
-              <div className="r-result-header">
-                <span className="r-result-label" style={{ color: resultCfg.color }}>{resultCfg.label}</span>
-                {resultCfg.xpLabel && <span className="r-result-xp" style={{ color: resultCfg.color }}>{resultCfg.xpLabel}</span>}
+            <div className="r-char">
+              <div className="r-char-avatar">🧙</div>
+              <div className="r-char-bubble">
+                <div className="r-char-name">{book.characterName}</div>
+                <div className="r-char-text">{scene.storyText}</div>
               </div>
-              <div className="r-result-text">{result.feedback}</div>
-
-              {(isCorrect || isPartial) && (
-                <>
-                  <div className="r-result-div" />
-                  <div className="r-result-sub">
-                    {nodeIndex === total - 1 ? 'Você completou este livro.' : 'Avance para a próxima cena.'}
-                  </div>
-                  <button className="r-action" onClick={goNext}>
-                    {nodeIndex === total - 1 ? 'Concluir jornada' : 'Próxima cena'} →
-                  </button>
-                </>
-              )}
-
-              {isWrong && (
-                <>
-                  <div className="r-result-div" />
-                  <div className="r-result-sub">Revise o conteúdo e tente uma resposta diferente.</div>
-                  <button className="r-action" onClick={() => { setResult(null); setAnswer('') }}>
-                    Tentar novamente
-                  </button>
-                </>
-              )}
             </div>
-          )}
+
+            <div className="r-divider"/>
+
+            <div className="r-challenge">
+              <div className="r-challenge-label">
+                <div className="r-challenge-pulse"/>
+                Desafio
+              </div>
+              <div className="r-challenge-q">{scene.challengeQuestion}</div>
+            </div>
+
+            {!result ? (
+              <div className="r-form" key={`form-${sceneKey}`}>
+                {loading && <div className="r-loading-bar"/>}
+                <textarea
+                  ref={textareaRef}
+                  className="r-textarea"
+                  placeholder="Escreva sua resposta aqui..."
+                  value={answer}
+                  onChange={e=>setAnswer(e.target.value)}
+                  onKeyDown={e=>{if(e.key==='Enter'&&e.ctrlKey)handleEvaluate(e)}}
+                  disabled={loading}
+                />
+                <button className="r-submit" onClick={handleEvaluate} disabled={loading||!answer.trim()}>
+                  {loading?'Avaliando...':'Enviar resposta'}
+                </button>
+                <div className="r-hint">Ctrl + Enter para enviar</div>
+              </div>
+            ) : (() => {
+              const cfg = isCorrect
+                ? {border:'#6b4a1a',bg:'rgba(196,148,74,.05)',dot:'#c4944a',label:'Correto',xpLabel:'+100 XP'}
+                : isPartial
+                ? {border:'#4a3a1a',bg:'rgba(245,158,11,.04)',dot:'#f59e0b',label:'Parcial',xpLabel:'+50 XP'}
+                : {border:'#2a2520',bg:'transparent',dot:'#3a3028',label:'Incorreto',xpLabel:''}
+              return (
+                <div className="r-result" style={{borderColor:cfg.border,background:cfg.bg}}>
+                  <div className="r-result-head">
+                    <div className="r-result-badge" style={{color:cfg.dot}}>
+                      <div className="r-result-dot" style={{background:cfg.dot}}/>
+                      {cfg.label}
+                    </div>
+                    {cfg.xpLabel && <span className="r-result-xp" style={{color:cfg.dot}}>{cfg.xpLabel}</span>}
+                  </div>
+                  <div className="r-result-text">{result.feedback}</div>
+                  {(isCorrect||isPartial)&&(
+                    <>
+                      <div className="r-result-div"/>
+                      <div className="r-result-sub">{nodeIndex===total-1?'Você completou este livro.':'Pronto para a próxima cena?'}</div>
+                      <button className="r-action" onClick={goNext}>{nodeIndex===total-1?'Concluir jornada':'Próxima cena'} →</button>
+                    </>
+                  )}
+                  {isWrong&&(
+                    <>
+                      <div className="r-result-div"/>
+                      <div className="r-result-sub">Releia o enunciado e tente uma abordagem diferente.</div>
+                      <button className="r-action" onClick={()=>{setResult(null);setAnswer('')}}>Tentar novamente</button>
+                    </>
+                  )}
+                </div>
+              )
+            })()}
+          </div>
         </div>
       </div>
     </>
