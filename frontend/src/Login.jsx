@@ -25,7 +25,7 @@ export default function Login() {
         localStorage.setItem('user', JSON.stringify(data.user))
         navigate(data.user.role === 'escritor' ? '/author' : '/dashboard')
       } else {
-        setMessage({ type: 'success', text: 'Conta criada. Faça login.' })
+        setMessage({ type: 'success', text: 'Conta criada! Faça login.' })
         setIsLogin(true); setPassword(''); setRole('')
       }
     } else {
@@ -37,195 +37,159 @@ export default function Login() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @keyframes float0 { 0%,100%{transform:translateY(0) rotate(-6deg)} 50%{transform:translateY(-12px) rotate(-6deg)} }
+        @keyframes float1 { 0%,100%{transform:translateY(0) rotate(4deg)} 50%{transform:translateY(-9px) rotate(4deg)} }
+        @keyframes float2 { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-14px) rotate(-3deg)} }
+        @keyframes float3 { 0%,100%{transform:translateY(0) rotate(7deg)} 50%{transform:translateY(-8px) rotate(7deg)} }
+        @keyframes float4 { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-11px) rotate(-5deg)} }
+        @keyframes float5 { 0%,100%{transform:translateY(0) rotate(2deg)} 50%{transform:translateY(-10px) rotate(2deg)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
         .l-root {
           min-height: 100dvh;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          background: #09090b;
-          font-family: 'Outfit', sans-serif;
+          background: #2a1a0e;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Nunito', sans-serif;
+          position: relative;
+          overflow: hidden;
+          padding: 24px;
         }
 
-        /* ── LEFT PANEL ── */
-        .l-left {
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding: 48px;
-          border-right: 1px solid #1c1c1e;
-          overflow: hidden;
-        }
-        .l-left-bg {
+        /* ── FUNDO ── */
+        .l-bg {
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(ellipse 60% 50% at 20% 80%, rgba(16,185,129,.07) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 80% 20%, rgba(59,130,246,.05) 0%, transparent 70%);
+            radial-gradient(ellipse 80% 60% at 20% 50%, rgba(139,94,60,.4) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 80% at 80% 50%, rgba(90,50,20,.6) 0%, transparent 60%),
+            radial-gradient(ellipse 100% 100% at 50% 100%, rgba(58,34,16,.8) 0%, transparent 50%);
           pointer-events: none;
         }
-        .l-grid {
+        .l-grain {
           position: absolute;
           inset: 0;
-          background-image:
-            linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-          background-size: 40px 40px;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+          pointer-events: none;
+          opacity: .6;
+        }
+        .l-glow {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(196,148,74,.08) 0%, transparent 70%);
           pointer-events: none;
         }
-        .l-brand {
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 12px;
+
+        /* ── LIVROS DECORATIVOS ── */
+        .l-books {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
         }
-        .l-brand-icon {
-          width: 36px;
-          height: 36px;
-          border: 1px solid #27272a;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .l-book {
+          position: absolute;
+          border-radius: 3px 6px 6px 3px;
+          box-shadow: 2px 4px 16px rgba(0,0,0,.4), inset -2px 0 0 rgba(0,0,0,.2), inset 2px 0 0 rgba(255,255,255,.06);
         }
-        .l-brand-name {
-          font-size: 15px;
-          font-weight: 600;
-          color: #fafafa;
-          letter-spacing: -.01em;
+        .l-book::before {
+          content: '';
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          width: 8px;
+          background: rgba(0,0,0,.25);
+          border-radius: 3px 0 0 3px;
         }
-        .l-hero {
-          position: relative;
-        }
-        .l-hero-tag {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 11px;
-          font-weight: 500;
-          color: #10b981;
-          letter-spacing: .08em;
-          text-transform: uppercase;
-          margin-bottom: 24px;
-        }
-        .l-hero-tag-dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #10b981;
-          animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: .4; transform: scale(.8); }
-        }
-        .l-hero h1 {
-          font-size: clamp(32px, 3.5vw, 48px);
-          font-weight: 600;
-          color: #fafafa;
-          line-height: 1.1;
-          letter-spacing: -.03em;
-          margin-bottom: 16px;
-        }
-        .l-hero h1 em {
-          font-style: normal;
-          color: #10b981;
-        }
-        .l-hero p {
-          font-size: 15px;
-          color: #71717a;
-          line-height: 1.7;
-          max-width: 380px;
-        }
-        .l-stats {
-          position: relative;
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1px;
-          background: #1c1c1e;
-          border: 1px solid #1c1c1e;
-          border-radius: 16px;
-          overflow: hidden;
-        }
-        .l-stat {
-          background: #09090b;
-          padding: 20px 22px;
-        }
-        .l-stat-val {
-          font-family: 'Geist Mono', monospace;
-          font-size: 24px;
-          font-weight: 500;
-          color: #fafafa;
-          letter-spacing: -.02em;
-        }
-        .l-stat-label {
-          font-size: 12px;
-          color: #52525b;
-          margin-top: 4px;
+        .l-book::after {
+          content: '';
+          position: absolute;
+          top: 15%; bottom: 15%; left: 12px; right: 8px;
+          border-top: 1px solid rgba(255,255,255,.08);
+          border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
-        /* ── RIGHT PANEL ── */
-        .l-right {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 48px;
-        }
-        .l-form-wrap {
+        /* ── CARD DO FORM ── */
+        .l-card {
+          position: relative;
           width: 100%;
-          max-width: 380px;
-        }
-        .l-form-header {
-          margin-bottom: 36px;
-        }
-        .l-form-header h2 {
-          font-size: 22px;
-          font-weight: 600;
-          color: #fafafa;
-          letter-spacing: -.02em;
-          margin-bottom: 6px;
-        }
-        .l-form-header p {
-          font-size: 14px;
-          color: #52525b;
+          max-width: 420px;
+          background: rgba(250,246,240,.97);
+          border-radius: 24px;
+          padding: 44px 40px;
+          box-shadow:
+            0 32px 80px rgba(0,0,0,.5),
+            0 0 0 1px rgba(255,255,255,.1);
+          animation: fadeUp .5s cubic-bezier(.4,0,.2,1);
+          backdrop-filter: blur(4px);
         }
 
-        /* Tabs */
+        .l-brand {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          margin-bottom: 32px;
+        }
+        .l-brand-mark {
+          width: 52px; height: 52px;
+          background: linear-gradient(135deg, #8b5e3c, #6b3e1c);
+          border-radius: 14px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 24px;
+          box-shadow: 0 4px 14px rgba(107,62,28,.4);
+          margin-bottom: 14px;
+        }
+        .l-brand h1 {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 24px;
+          font-weight: 700;
+          color: #3a2a1a;
+          letter-spacing: .01em;
+          margin-bottom: 4px;
+        }
+        .l-brand p {
+          font-size: 13px;
+          color: #9a8878;
+          font-weight: 500;
+        }
+
+        /* TABS */
         .l-tabs {
           display: flex;
-          background: #111113;
-          border: 1px solid #1c1c1e;
-          border-radius: 10px;
-          padding: 3px;
-          margin-bottom: 28px;
-          gap: 2px;
+          background: #f5ede0;
+          border-radius: 12px;
+          padding: 4px;
+          margin-bottom: 26px;
+          gap: 3px;
         }
         .l-tab {
           flex: 1;
-          padding: 8px;
+          padding: 9px;
           border: none;
           background: transparent;
-          border-radius: 7px;
+          border-radius: 9px;
           font-size: 13px;
-          font-weight: 500;
-          color: #52525b;
+          font-weight: 700;
+          color: #b0a090;
           cursor: pointer;
-          font-family: 'Outfit', sans-serif;
-          transition: all .18s;
+          font-family: 'Nunito', sans-serif;
+          transition: all .2s;
         }
         .l-tab.active {
-          background: #1c1c1e;
-          color: #fafafa;
+          background: #fff8f0;
+          color: #3a2a1a;
+          box-shadow: 0 2px 8px rgba(90,60,30,.1);
         }
 
-        /* Role selector */
+        /* ROLE */
         .l-role-label {
           font-size: 11px;
-          font-weight: 500;
-          color: #52525b;
+          font-weight: 700;
+          color: #b0a090;
           text-transform: uppercase;
           letter-spacing: .06em;
           margin-bottom: 8px;
@@ -235,191 +199,189 @@ export default function Login() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 8px;
-          margin-bottom: 20px;
+          margin-bottom: 18px;
         }
         .l-role-btn {
-          padding: 14px 12px;
-          border: 1px solid #1c1c1e;
-          border-radius: 10px;
-          background: #111113;
-          color: #52525b;
+          padding: 13px 10px;
+          border: 1.5px solid #e8ddd0;
+          border-radius: 12px;
+          background: #fff8f0;
+          color: #9a8878;
           font-size: 13px;
-          font-weight: 500;
+          font-weight: 700;
           cursor: pointer;
-          font-family: 'Outfit', sans-serif;
+          font-family: 'Nunito', sans-serif;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 8px;
-          transition: all .18s;
+          gap: 7px;
+          transition: all .2s;
         }
-        .l-role-btn svg { opacity: .5; transition: opacity .18s; }
+        .l-role-btn:hover { border-color: #c4a882; }
         .l-role-btn.sel {
-          border-color: #10b981;
-          background: rgba(16,185,129,.06);
-          color: #10b981;
+          border-color: #c4944a;
+          background: #fff8ee;
+          color: #7a5a2a;
+          box-shadow: 0 0 0 3px rgba(196,148,74,.1);
         }
-        .l-role-btn.sel svg { opacity: 1; }
+        .l-role-icon { font-size: 20px; }
 
-        /* Fields */
-        .l-field { margin-bottom: 16px; }
+        /* FIELDS */
+        .l-field { margin-bottom: 14px; }
         .l-field label {
           display: block;
-          font-size: 12px;
-          font-weight: 500;
-          color: #52525b;
+          font-size: 11px;
+          font-weight: 700;
+          color: #9a8878;
           margin-bottom: 7px;
-          letter-spacing: .04em;
+          letter-spacing: .05em;
+          text-transform: uppercase;
         }
         .l-input {
           width: 100%;
-          padding: 11px 14px;
-          background: #111113;
-          border: 1px solid #1c1c1e;
+          padding: 12px 14px;
+          background: #fff8f0;
+          border: 1.5px solid #e8ddd0;
           border-radius: 10px;
           font-size: 14px;
-          color: #fafafa;
-          font-family: 'Outfit', sans-serif;
+          color: #3a2a1a;
+          font-family: 'Nunito', sans-serif;
+          font-weight: 500;
           outline: none;
-          transition: border-color .18s;
+          transition: border-color .2s, box-shadow .2s;
         }
-        .l-input:focus { border-color: #3f3f46; }
-        .l-input::placeholder { color: #3f3f46; }
+        .l-input:focus {
+          border-color: #c4a882;
+          box-shadow: 0 0 0 3px rgba(196,168,130,.12);
+        }
+        .l-input::placeholder { color: #d4c4b0; }
 
-        /* Submit */
+        /* SUBMIT */
         .l-submit {
           width: 100%;
-          padding: 12px;
-          background: #fafafa;
-          color: #09090b;
+          padding: 14px;
+          background: linear-gradient(135deg, #8b5e3c, #c4944a);
+          color: #fff8f0;
           border: none;
-          border-radius: 10px;
-          font-size: 14px;
-          font-weight: 600;
+          border-radius: 12px;
+          font-size: 15px;
+          font-weight: 700;
           cursor: pointer;
-          font-family: 'Outfit', sans-serif;
-          margin-top: 8px;
-          transition: opacity .18s, transform .1s;
-          letter-spacing: -.01em;
+          font-family: 'Nunito', sans-serif;
+          margin-top: 6px;
+          transition: opacity .2s, transform .15s;
+          box-shadow: 0 4px 14px rgba(139,94,60,.35);
+          letter-spacing: .01em;
         }
-        .l-submit:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
-        .l-submit:active:not(:disabled) { transform: scale(.98) translateY(0); }
-        .l-submit:disabled { opacity: .35; cursor: not-allowed; }
+        .l-submit:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+        .l-submit:active:not(:disabled) { transform: scale(.98); }
+        .l-submit:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
 
-        /* Message */
+        /* MSG */
         .l-msg {
           margin-top: 14px;
-          padding: 10px 14px;
-          border-radius: 8px;
+          padding: 11px 14px;
+          border-radius: 10px;
           font-size: 13px;
           text-align: center;
+          font-weight: 600;
         }
-        .l-msg.error { background: rgba(239,68,68,.07); color: #f87171; border: 1px solid rgba(239,68,68,.15); }
-        .l-msg.success { background: rgba(16,185,129,.07); color: #6ee7b7; border: 1px solid rgba(16,185,129,.15); }
+        .l-msg.error { background: #fff0ee; color: #b05a3a; border: 1.5px solid #f0c4b8; }
+        .l-msg.success { background: #f0faf0; color: #3a7a3a; border: 1.5px solid #b8e0b8; }
 
-        @media (max-width: 767px) {
-          .l-root { grid-template-columns: 1fr; }
-          .l-left { display: none; }
-          .l-right { padding: 32px 24px; }
+        /* FOOTER */
+        .l-footer {
+          text-align: center;
+          margin-top: 20px;
+          font-size: 12px;
+          color: rgba(250,246,240,.3);
+          position: relative;
+        }
+
+        @media (max-width: 480px) {
+          .l-card { padding: 36px 24px; }
         }
       `}</style>
 
       <div className="l-root">
-        {/* LEFT */}
-        <div className="l-left">
-          <div className="l-left-bg" />
-          <div className="l-grid" />
+        <div className="l-bg"/>
+        <div className="l-grain"/>
+        <div className="l-glow"/>
+
+        {/* Livros decorativos */}
+        <div className="l-books">
+          {/* Esquerda */}
+          <div className="l-book" style={{width:48,height:180,background:'linear-gradient(180deg,#8b4a2a,#6b3a1a)',top:'8%',left:'3%',animation:'float0 6s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:36,height:220,background:'linear-gradient(180deg,#5a3a8b,#3a2a6b)',top:'5%',left:'7%',animationDelay:'.5s',animation:'float1 7s .5s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:52,height:160,background:'linear-gradient(180deg,#2a6b4a,#1a4a3a)',top:'12%',left:'11%',animation:'float2 8s 1s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:40,height:200,background:'linear-gradient(180deg,#8b6a2a,#6b4a1a)',top:'3%',left:'15%',animation:'float3 6.5s .3s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:30,height:140,background:'linear-gradient(180deg,#8b2a2a,#6b1a1a)',top:'18%',left:'18%',animation:'float4 7.5s .8s ease-in-out infinite'}}/>
+
+          {/* Direita */}
+          <div className="l-book" style={{width:44,height:190,background:'linear-gradient(180deg,#4a6b8b,#2a4a6b)',top:'6%',right:'4%',animation:'float1 7s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:38,height:230,background:'linear-gradient(180deg,#8b5a2a,#6b3a1a)',top:'3%',right:'8%',animation:'float0 6.5s .4s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:50,height:170,background:'linear-gradient(180deg,#6b2a6b,#4a1a4a)',top:'15%',right:'12%',animation:'float3 8s .7s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:34,height:210,background:'linear-gradient(180deg,#2a8b5a,#1a6b3a)',top:'4%',right:'16%',animation:'float2 7s 1.2s ease-in-out infinite'}}/>
+          <div className="l-book" style={{width:42,height:155,background:'linear-gradient(180deg,#8b7a2a,#6b5a1a)',top:'20%',right:'19%',animation:'float5 6s .2s ease-in-out infinite'}}/>
+
+          {/* Chão — livros deitados */}
+          <div className="l-book" style={{width:120,height:32,background:'linear-gradient(90deg,#8b4a2a,#6b3a1a)',bottom:'4%',left:'5%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+          <div className="l-book" style={{width:90,height:28,background:'linear-gradient(90deg,#2a6b8b,#1a4a6b)',bottom:'4%',left:'14%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+          <div className="l-book" style={{width:100,height:30,background:'linear-gradient(90deg,#6b2a6b,#4a1a4a)',bottom:'8%',left:'6%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+          <div className="l-book" style={{width:110,height:26,background:'linear-gradient(90deg,#2a7a4a,#1a5a3a)',bottom:'4%',right:'5%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+          <div className="l-book" style={{width:85,height:32,background:'linear-gradient(90deg,#8b6a2a,#6b4a1a)',bottom:'4%',right:'14%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+          <div className="l-book" style={{width:95,height:28,background:'linear-gradient(90deg,#8b2a2a,#6b1a1a)',bottom:'8%',right:'6%',borderRadius:'3px',transform:'rotate(0deg)',boxShadow:'0 4px 20px rgba(0,0,0,.5)'}}/>
+        </div>
+
+        {/* Card */}
+        <div className="l-card">
           <div className="l-brand">
-            <div className="l-brand-icon">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M3 4h12M3 8h8M3 12h10" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="l-brand-name">Arcano Saber</span>
+            <div className="l-brand-mark">📖</div>
+            <h1>Arcano Saber</h1>
+            <p>Plataforma de e-books interativos</p>
           </div>
 
-          <div className="l-hero">
-            <div className="l-hero-tag">
-              <div className="l-hero-tag-dot" />
-              Plataforma educacional
-            </div>
-            <h1>Aprenda através<br/>de <em>histórias</em> reais.</h1>
-            <p>E-books interativos com narrativa RPG e avaliação por inteligência artificial. Cada resposta sua avança a jornada.</p>
+          <div className="l-tabs">
+            <button className={`l-tab ${isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(true); setMessage(null) }}>Entrar</button>
+            <button className={`l-tab ${!isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(false); setMessage(null) }}>Cadastrar</button>
           </div>
 
-          <div className="l-stats">
-            <div className="l-stat">
-              <div className="l-stat-val">50+</div>
-              <div className="l-stat-label">Cenas por livro</div>
+          <form onSubmit={handleSubmit}>
+            {!isLogin && (
+              <>
+                <div className="l-field">
+                  <label>Nome completo</label>
+                  <input className="l-input" type="text" placeholder="Seu nome" value={name} onChange={e => setName(e.target.value)} required />
+                </div>
+                <span className="l-role-label">Tipo de conta</span>
+                <div className="l-role-row">
+                  <button type="button" className={`l-role-btn ${role === 'leitor' ? 'sel' : ''}`} onClick={() => setRole('leitor')}>
+                    <span className="l-role-icon">📚</span>
+                    Leitor
+                  </button>
+                  <button type="button" className={`l-role-btn ${role === 'escritor' ? 'sel' : ''}`} onClick={() => setRole('escritor')}>
+                    <span className="l-role-icon">✍️</span>
+                    Escritor
+                  </button>
+                </div>
+              </>
+            )}
+            <div className="l-field">
+              <label>E-mail</label>
+              <input className="l-input" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} required />
             </div>
-            <div className="l-stat">
-              <div className="l-stat-val">IA</div>
-              <div className="l-stat-label">Avaliação em tempo real</div>
+            <div className="l-field">
+              <label>Senha</label>
+              <input className="l-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
             </div>
-            <div className="l-stat">
-              <div className="l-stat-val">XP</div>
-              <div className="l-stat-label">Sistema de progressão</div>
-            </div>
-            <div className="l-stat">
-              <div className="l-stat-val">100%</div>
-              <div className="l-stat-label">Respostas abertas</div>
-            </div>
-          </div>
+            <button className="l-submit" type="submit" disabled={loading}>
+              {loading ? 'Aguarde...' : isLogin ? 'Entrar na jornada' : 'Criar minha conta'}
+            </button>
+          </form>
+
+          {message && <div className={`l-msg ${message.type}`}>{message.text}</div>}
         </div>
 
-        {/* RIGHT */}
-        <div className="l-right">
-          <div className="l-form-wrap">
-            <div className="l-form-header">
-              <h2>{isLogin ? 'Bem-vindo de volta.' : 'Crie sua conta.'}</h2>
-              <p>{isLogin ? 'Entre para continuar sua jornada.' : 'Comece a aprender hoje.'}</p>
-            </div>
-
-            <div className="l-tabs">
-              <button className={`l-tab ${isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(true); setMessage(null) }}>Entrar</button>
-              <button className={`l-tab ${!isLogin ? 'active' : ''}`} onClick={() => { setIsLogin(false); setMessage(null) }}>Cadastrar</button>
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              {!isLogin && (
-                <>
-                  <div className="l-field">
-                    <label>Nome completo</label>
-                    <input className="l-input" type="text" placeholder="Seu nome" value={name} onChange={e => setName(e.target.value)} required />
-                  </div>
-                  <span className="l-role-label">Tipo de conta</span>
-                  <div className="l-role-row">
-                    <button type="button" className={`l-role-btn ${role === 'leitor' ? 'sel' : ''}`} onClick={() => setRole('leitor')}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M4 3h5.5a2.5 2.5 0 0 1 0 5H4V3zM4 8h6a3 3 0 0 1 0 6H4V8z"/>
-                      </svg>
-                      Leitor
-                    </button>
-                    <button type="button" className={`l-role-btn ${role === 'escritor' ? 'sel' : ''}`} onClick={() => setRole('escritor')}>
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M14.5 2.5a2.121 2.121 0 0 1 3 3L6 17H3v-3L14.5 2.5z"/>
-                      </svg>
-                      Escritor
-                    </button>
-                  </div>
-                </>
-              )}
-              <div className="l-field">
-                <label>E-mail</label>
-                <input className="l-input" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} required />
-              </div>
-              <div className="l-field">
-                <label>Senha</label>
-                <input className="l-input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
-              </div>
-              <button className="l-submit" type="submit" disabled={loading}>
-                {loading ? 'Aguarde...' : isLogin ? 'Entrar' : 'Criar conta'}
-              </button>
-            </form>
-
-            {message && <div className={`l-msg ${message.type}`}>{message.text}</div>}
-          </div>
-        </div>
       </div>
     </>
   )
