@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from './api'
+import EmailMotivacionalBtn from './components/EmailMotivacionalBtn'
 
 const SUBJECT_COLORS = {
   'Programação':'#7c5c3e','Matemática':'#b5850a','Física':'#2d7a5f',
@@ -254,7 +255,8 @@ export default function Dashboard() {
 
         {tab==='panel'&&(
           <>
-            <div className="dsl" style={{marginBottom:28}}><span className="dsl-l">Suas métricas</span><button className="dexp" onClick={exportJson} disabled={exportLoading}>{exportLoading?'Gerando...':'Exportar JSON'}</button></div>
+            <div className="dsl" style={{marginBottom:16}}><span className="dsl-l">Suas métricas</span><button className="dexp" onClick={exportJson} disabled={exportLoading}>{exportLoading?'Gerando...':'Exportar JSON'}</button></div>
+            <EmailMotivacionalBtn style={{marginBottom:28}} />
             {loading?<div style={{color:'#b0a090',textAlign:'center',padding:'40px 0'}}>Carregando...</div>:analytics&&(<>
               <div className="ds4">
                 {[{l:'XP Total',v:analytics.xp,s:`Nível ${level}`,c:'#c4944a'},{l:'Acertos',v:`${analytics.taxaAcerto}%`,s:`${analytics.totalRespostas} respostas`,c:'#2d7a5f'},{l:'Aprendizado',v:`${analytics.taxaAprendizado}%`,s:'correto + parcial',c:'#7c5c3e'},{l:'Livros',v:analytics.livrosIniciados,s:`de ${books.length} disponíveis`,c:'#b0a090'}].map((s,i)=>(

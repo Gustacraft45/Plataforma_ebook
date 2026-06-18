@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from './api'
+import EmailMotivacionalBtn from './components/EmailMotivacionalBtn'
 
 const SUBJECTS = ['Programação','Matemática','Física','Química','Biologia','História','Geografia','Filosofia','Literatura','Outros']
 
@@ -170,6 +171,8 @@ export default function AuthorPanel() {
                 </div>
                 <button className="btn-primary" onClick={openCreate}>+ Novo livro</button>
               </div>
+
+              <EmailMotivacionalBtn style={{marginBottom:28}} />
 
               {loading ? (
                 <div style={{ color: '#4a4d60', textAlign: 'center', padding: '40px 0' }}>Carregando...</div>
